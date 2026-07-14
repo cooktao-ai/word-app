@@ -1,0 +1,20 @@
+# Gradle 相关文件
+.gradle/
+build/
+
+# 本地配置
+local.properties
+
+# Android Studio
+*.iml
+.idea/
+
+# 编译输出
+*.apk
+*.aab
+*.ap_
+*.dex
+
+# keystore（签名文件，不要提交）
+*.jks
+*.keystore
