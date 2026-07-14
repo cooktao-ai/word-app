@@ -1,0 +1,1681 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#7c5cff">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="单词大冒险">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon.png">
+<link rel="icon" href="icon.png">
+<title>单词大冒险 🚀</title>
+<script>
+// 六年级上册 英语单词数据
+// 数据来源：六上单词表.pdf + 六上单词默写.pdf（OCR 识别整理）
+// 字段说明：word 英文 / pos 词性 / meaning 中文释义 / phonetic 音标 / phrase 是否短语 / core 是否核心词(带*为非核心)
+
+var WORDS = [
+  // ===================== Unit 1 =====================
+  { word: "try one's best", pos: "短语", meaning: "尽某人最大的努力", phonetic: "/traɪ wʌnz best/", phrase: true, core: true, unit: 1 },
+  { word: "act", pos: "v.", meaning: "扮演，演出", phonetic: "/ækt/", core: false, unit: 1 },
+  { word: "play", pos: "n./v.", meaning: "戏剧；扮演", phonetic: "/pleɪ/", core: true, unit: 1 },
+  { word: "poster", pos: "n.", meaning: "海报，招贴画", phonetic: "/ˈpəʊstə(r)/", core: false, unit: 1 },
+  { word: "last", pos: "adj.", meaning: "上一个的，最近的", phonetic: "/lɑːst/", core: true, unit: 1 },
+  { word: "take part", pos: "短语", meaning: "参与", phonetic: "/teɪk pɑːt/", phrase: true, core: false, unit: 1 },
+  { word: "practise", pos: "v.", meaning: "练习，训练", phonetic: "/ˈpræktɪs/", core: false, unit: 1 },
+  { word: "afraid", pos: "adj.", meaning: "害怕，畏惧", phonetic: "/əˈfreɪd/", core: false, unit: 1 },
+  { word: "calm down", pos: "短语", meaning: "平静，安静", phonetic: "/kɑːm daʊn/", phrase: true, core: false, unit: 1 },
+  { word: "begin", pos: "v.", meaning: "开始", phonetic: "/bɪˈɡɪn/", core: true, unit: 1 },
+  { word: "forget", pos: "v.", meaning: "忘记，遗忘", phonetic: "/fəˈɡet/", core: false, unit: 1 },
+  { word: "the words", pos: "n.", meaning: "歌词", phonetic: "/wɜːdz/", core: false, unit: 1 },
+  { word: "remember", pos: "v.", meaning: "记起；记住", phonetic: "/rɪˈmembə(r)/", core: false, unit: 1 },
+  { word: "finish", pos: "v.", meaning: "完成，做完", phonetic: "/ˈfɪnɪʃ/", core: false, unit: 1 },
+  { word: "keep", pos: "v.", meaning: "继续，重复", phonetic: "/kiːp/", core: true, unit: 1 },
+  { word: "ago", pos: "adv.", meaning: "以前", phonetic: "/əˈɡəʊ/", core: true, unit: 1 },
+  { word: "movement", pos: "n.", meaning: "运动，动作", phonetic: "/ˈmuːvmənt/", core: false, unit: 1 },
+  { word: "skill", pos: "n.", meaning: "技能，技术", phonetic: "/skɪl/", core: false, unit: 1 },
+  { word: "in front of", pos: "短语", meaning: "在……前面", phonetic: "/ɪn frʌnt əv/", phrase: true, core: false, unit: 1 },
+  { word: "ready", pos: "adj.", meaning: "准备好的", phonetic: "/ˈredi/", core: false, unit: 1 },
+  { word: "long ago", pos: "短语", meaning: "很久以前", phonetic: "/lɒŋ əˈɡəʊ/", phrase: true, core: false, unit: 1 },
+  { word: "snail", pos: "n.", meaning: "蜗牛", phonetic: "/sneɪl/", core: false, unit: 1 },
+  { word: "top", pos: "n.", meaning: "顶端，顶部", phonetic: "/tɒp/", core: true, unit: 1 },
+
+  // ===================== Unit 2 =====================
+  { word: "honesty", pos: "n.", meaning: "诚实", phonetic: "/ˈɒnəsti/", core: false, unit: 2 },
+  { word: "storybook", pos: "n.", meaning: "儿童故事书", phonetic: "/ˈstɔːrɪbʊk/", core: false, unit: 2 },
+  { word: "lie", pos: "n.", meaning: "谎言，谎话", phonetic: "/laɪ/", core: false, unit: 2 },
+  { word: "break", pos: "v.", meaning: "弄坏，损坏", phonetic: "/breɪk/", core: false, unit: 2 },
+  { word: "yesterday", pos: "adv.", meaning: "在昨天；昨天", phonetic: "/ˈjestədeɪ/", core: true, unit: 2 },
+  { word: "repair", pos: "v.", meaning: "修理，修补", phonetic: "/rɪˈpeə(r)/", core: false, unit: 2 },
+  { word: "say", pos: "v.", meaning: "说，讲", phonetic: "/seɪ/", core: true, unit: 2 },
+  { word: "poor", pos: "adj.", meaning: "贫穷的", phonetic: "/pʊə(r)/", core: false, unit: 2 },
+  { word: "man", pos: "n.", meaning: "男人", phonetic: "/mæn/", core: false, unit: 2 },
+  { word: "old", pos: "adj.", meaning: "老的，年纪大的", phonetic: "/əʊld/", core: false, unit: 2 },
+  { word: "ox", pos: "n.", meaning: "牛", phonetic: "/ɒks/", core: false, unit: 2 },
+  { word: "away from home", pos: "短语", meaning: "离开家", phonetic: "/əˈweɪ frɒm həʊm/", phrase: true, core: false, unit: 2 },
+  { word: "nephew", pos: "n.", meaning: "侄子，外甥", phonetic: "/ˈnefjuː/", core: false, unit: 2 },
+  { word: "sell", pos: "v.", meaning: "卖，出售", phonetic: "/sel/", core: false, unit: 2 },
+  { word: "buyer", pos: "n.", meaning: "买主，买方", phonetic: "/ˈbaɪə(r)/", core: false, unit: 2 },
+  { word: "get back", pos: "短语", meaning: "重新获得", phonetic: "/ɡet bæk/", phrase: true, core: false, unit: 2 },
+  { word: "name", pos: "n.", meaning: "名声，名誉", phonetic: "/neɪm/", core: false, unit: 2 },
+  { word: "watch", pos: "v.", meaning: "照看，看护", phonetic: "/wɒtʃ/", core: false, unit: 2 },
+  { word: "wolf", pos: "n.", meaning: "狼", phonetic: "/wʊlf/", core: false, unit: 2 },
+  { word: "answer", pos: "v.", meaning: "答复，回答", phonetic: "/ˈɑːnsə(r)/", core: false, unit: 2 },
+  { word: "cry", pos: "v.", meaning: "哭，哭泣", phonetic: "/kraɪ/", core: false, unit: 2 },
+
+  // ===================== Unit 3 =====================
+  { word: "hero", pos: "n.", meaning: "崇拜的对象", phonetic: "/ˈhɪərəʊ/", core: false, unit: 3 },
+  { word: "famous", pos: "adj.", meaning: "著名的，出名的", phonetic: "/ˈfeɪməs/", core: false, unit: 3 },
+  { word: "scientist", pos: "n.", meaning: "科学家", phonetic: "/ˈsaɪəntɪst/", core: false, unit: 3 },
+  { word: "inventor", pos: "n.", meaning: "发明家，发明者", phonetic: "/ɪnˈventə(r)/", core: false, unit: 3 },
+  { word: "hybrid rice", pos: "n.", meaning: "杂交水稻", phonetic: "/ˈhaɪbrɪd raɪs/", phrase: true, core: false, unit: 3 },
+  { word: "dream", pos: "n.", meaning: "梦想，愿望", phonetic: "/driːm/", core: false, unit: 3 },
+  { word: "cool", pos: "adj.", meaning: "凉快，凉爽", phonetic: "/kuːl/", core: true, unit: 3 },
+  { word: "all over the world", pos: "短语", meaning: "世界各地，全世界", phonetic: "/ɔːl ˈəʊvə ðə wɜːld/", phrase: true, core: false, unit: 3 },
+  { word: "be born", pos: "短语", meaning: "出生，诞生", phonetic: "/biː bɔːn/", phrase: true, core: false, unit: 3 },
+  { word: "pass away", pos: "短语", meaning: "去世", phonetic: "/pɑːs əˈweɪ/", phrase: true, core: false, unit: 3 },
+  { word: "study", pos: "v.", meaning: "研究，调查", phonetic: "/ˈstʌdi/", core: true, unit: 3 },
+  { word: "call", pos: "v.", meaning: "称呼，把……叫作", phonetic: "/kɔːl/", core: false, unit: 3 },
+  { word: "come true", pos: "短语", meaning: "实现，成为现实", phonetic: "/kʌm truː/", phrase: true, core: false, unit: 3 },
+  { word: "farming", pos: "n.", meaning: "务农", phonetic: "/ˈfɑːmɪŋ/", core: false, unit: 3 },
+  { word: "age", pos: "n.", meaning: "年龄，年纪", phonetic: "/eɪdʒ/", core: false, unit: 3 },
+  { word: "grow up", pos: "短语", meaning: "长大，成长", phonetic: "/ɡrəʊ ʌp/", phrase: true, core: false, unit: 3 },
+  { word: "work on", pos: "短语", meaning: "从事，致力于", phonetic: "/wɜːk ɒn/", phrase: true, core: false, unit: 3 },
+  { word: "difficult", pos: "adj.", meaning: "困难的", phonetic: "/ˈdɪfɪkəlt/", core: true, unit: 3 },
+  { word: "develop", pos: "v.", meaning: "开发，研制", phonetic: "/dɪˈveləp/", core: false, unit: 3 },
+  { word: "bamboo", pos: "n.", meaning: "竹，竹子", phonetic: "/bæmˈbuː/", core: false, unit: 3 },
+  { word: "silk", pos: "n.", meaning: "丝绸", phonetic: "/sɪlk/", core: false, unit: 3 },
+  { word: "dear", pos: "adj.", meaning: "昂贵的，价格高的", phonetic: "/dɪə(r)/", core: false, unit: 3 },
+  { word: "paper", pos: "n.", meaning: "纸，纸张", phonetic: "/ˈpeɪpə(r)/", core: true, unit: 3 },
+  { word: "at first", pos: "短语", meaning: "起初，起先", phonetic: "/ət fɜːst/", phrase: true, core: false, unit: 3 },
+
+  // ===================== Unit 4 =====================
+  { word: "ninth", pos: "num.", meaning: "第九", phonetic: "/naɪnθ/", core: true, unit: 4 },
+  { word: "lunar month", pos: "短语", meaning: "农历……", phonetic: "/ˈluːnə mʌnθ/", phrase: true, core: false, unit: 4 },
+  { word: "show", pos: "v.", meaning: "表示", phonetic: "/ʃəʊ/", core: true, unit: 4 },
+  { word: "love", pos: "v.", meaning: "爱，关爱", phonetic: "/lʌv/", core: true, unit: 4 },
+  { word: "smartphone", pos: "n.", meaning: "智能手机", phonetic: "/ˈsmɑːtfəʊn/", core: false, unit: 4 },
+  { word: "wish", pos: "v.", meaning: "祝，祝愿", phonetic: "/wɪʃ/", core: false, unit: 4 },
+  { word: "a long life", pos: "短语", meaning: "长寿", phonetic: "/ə lɒŋ laɪf/", phrase: true, core: false, unit: 4 },
+  { word: "blow out", pos: "短语", meaning: "吹灭，熄灭", phonetic: "/bləʊ aʊt/", phrase: true, core: false, unit: 4 },
+  { word: "candle", pos: "n.", meaning: "蜡烛", phonetic: "/ˈkændl/", core: false, unit: 4 },
+  { word: "photo", pos: "n.", meaning: "照片", phonetic: "/ˈfəʊtəʊ/", core: false, unit: 4 },
+  { word: "time flies", pos: "短语", meaning: "时光飞逝", phonetic: "/taɪm flaɪz/", phrase: true, core: false, unit: 4 },
+  { word: "kid", pos: "n.", meaning: "小孩", phonetic: "/kɪd/", core: false, unit: 4 },
+  { word: "March", pos: "n.", meaning: "三月", phonetic: "/mɑːtʃ/", core: false, unit: 4 },
+  { word: "April", pos: "n.", meaning: "四月", phonetic: "/ˈeɪprəl/", core: false, unit: 4 },
+  { word: "July", pos: "n.", meaning: "七月", phonetic: "/dʒuˈlaɪ/", core: false, unit: 4 },
+  { word: "August", pos: "n.", meaning: "八月", phonetic: "/ˈɔːɡəst/", core: false, unit: 4 },
+  { word: "November", pos: "n.", meaning: "十一月", phonetic: "/nəʊˈvembə(r)/", core: false, unit: 4 },
+
+  // ===================== Unit 5 =====================
+  { word: "rubbish bin", pos: "n.", meaning: "垃圾桶", phonetic: "/ˈrʌbɪʃ bɪn/", phrase: true, core: false, unit: 5 },
+  { word: "ground", pos: "n.", meaning: "地，地面", phonetic: "/ɡraʊnd/", core: false, unit: 5 },
+  { word: "skin", pos: "n.", meaning: "（某些水果和蔬菜的）皮", phonetic: "/skɪn/", core: false, unit: 5 },
+  { word: "pick up", pos: "短语", meaning: "捡起", phonetic: "/pɪk ʌp/", phrase: true, core: false, unit: 5 },
+  { word: "throw", pos: "v./n.", meaning: "抛，扔", phonetic: "/θrəʊ/", core: false, unit: 5 },
+  { word: "will", pos: "v.", meaning: "将，将要", phonetic: "/wɪl/", core: false, unit: 5 },
+  { word: "fall", pos: "v.", meaning: "突然倒下，跌倒", phonetic: "/fɔːl/", core: false, unit: 5 },
+  { word: "go plogging", pos: "短语", meaning: "去拾荒慢跑", phonetic: "/ɡəʊ ˈplɒɡɪŋ/", phrase: true, core: false, unit: 5 },
+  { word: "jogging", pos: "n.", meaning: "慢跑锻炼", phonetic: "/ˈdʒɒɡɪŋ/", core: false, unit: 5 },
+  { word: "at the same time", pos: "短语", meaning: "同时，一起", phonetic: "/ət ðə seɪm taɪm/", phrase: true, core: false, unit: 5 },
+  { word: "gate", pos: "n.", meaning: "大门", phonetic: "/ɡeɪt/", core: false, unit: 5 },
+  { word: "on time", pos: "短语", meaning: "准时，按时", phonetic: "/ɒn taɪm/", phrase: true, core: false, unit: 5 },
+  { word: "cleaning", pos: "v.", meaning: "打扫，清洁", phonetic: "/ˈkliːnɪŋ/", core: false, unit: 5 },
+  { word: "group", pos: "n.", meaning: "组，群", phonetic: "/ɡruːp/", core: false, unit: 5 },
+  { word: "start", pos: "v.", meaning: "发起", phonetic: "/stɑːt/", core: false, unit: 5 },
+
+  // ===================== Unit 6 =====================
+  { word: "go green", pos: "短语", meaning: "践行绿色环保的生活方式", phonetic: "/ɡəʊ ɡriːn/", phrase: true, core: false, unit: 6 },
+  { word: "turn off", pos: "短语", meaning: "关掉", phonetic: "/tɜːn ɒf/", phrase: true, core: false, unit: 6 },
+  { word: "tap", pos: "n.", meaning: "水龙头", phonetic: "/tæp/", core: false, unit: 6 },
+  { word: "light", pos: "n.", meaning: "电灯", phonetic: "/laɪt/", core: true, unit: 6 },
+  { word: "both", pos: "adj.", meaning: "两个，两个都", phonetic: "/bəʊθ/", core: false, unit: 6 },
+  { word: "side", pos: "n.", meaning: "一面", phonetic: "/saɪd/", core: false, unit: 6 },
+  { word: "eat up", pos: "短语", meaning: "吃完，吃光", phonetic: "/iːt ʌp/", phrase: true, core: false, unit: 6 },
+  { word: "project", pos: "n.", meaning: "项目", phonetic: "/ˈprɒdʒekt/", core: false, unit: 6 },
+  { word: "the Earth", pos: "n.", meaning: "地球", phonetic: "/ði ɜːθ/", phrase: true, core: true, unit: 6 },
+  { word: "colour", pos: "v.", meaning: "着色", phonetic: "/ˈkʌlə(r)/", core: false, unit: 6 },
+  { word: "hour", pos: "n.", meaning: "小时", phonetic: "/ˈaʊə(r)/", core: false, unit: 6 },
+  { word: "save", pos: "v.", meaning: "节省，节约", phonetic: "/seɪv/", core: false, unit: 6 },
+  { word: "electricity", pos: "n.", meaning: "电，电能", phonetic: "/ɪˌlekˈtrɪsəti/", core: false, unit: 6 },
+  { word: "last", pos: "v.", meaning: "持续", phonetic: "/lɑːst/", core: true, unit: 6 },
+  { word: "brush", pos: "v.", meaning: "刷净", phonetic: "/brʌʃ/", core: false, unit: 6 },
+  { word: "tooth", pos: "n.", meaning: "牙，齿", phonetic: "/tuːθ/", core: false, unit: 6 },
+  { word: "waste", pos: "v.", meaning: "浪费", phonetic: "/weɪst/", core: false, unit: 6 },
+  { word: "vegetable", pos: "n.", meaning: "蔬菜", phonetic: "/ˈvedʒtəbl/", core: true, unit: 6 },
+  { word: "plastic", pos: "adj.", meaning: "塑料的", phonetic: "/ˈplæstɪk/", core: false, unit: 6 },
+
+  // ===================== Unit 7 =====================
+  { word: "glass", pos: "n.", meaning: "玻璃", phonetic: "/ɡlɑːs/", core: true, unit: 7 },
+  { word: "bottle", pos: "n.", meaning: "瓶子", phonetic: "/ˈbɒtl/", core: false, unit: 7 },
+  { word: "cardboard", pos: "n.", meaning: "硬纸板，卡纸", phonetic: "/ˈkɑːdbɔːd/", core: false, unit: 7 },
+  { word: "box", pos: "n.", meaning: "盒，箱", phonetic: "/bɒks/", core: true, unit: 7 },
+  { word: "be made of", pos: "短语", meaning: "用……做的", phonetic: "/bi meɪd əv/", phrase: true, core: false, unit: 7 },
+  { word: "button", pos: "n.", meaning: "纽扣，扣子", phonetic: "/ˈbʌtn/", core: false, unit: 7 },
+  { word: "happen", pos: "v.", meaning: "发生，出现", phonetic: "/ˈhæpən/", core: false, unit: 7 },
+  { word: "hat", pos: "n.", meaning: "帽子", phonetic: "/hæt/", core: false, unit: 7 },
+  { word: "do with", pos: "短语", meaning: "处理", phonetic: "/duː wɪð/", phrase: true, core: false, unit: 7 },
+  { word: "throw away", pos: "短语", meaning: "扔掉，丢掉", phonetic: "/θrəʊ əˈweɪ/", phrase: true, core: false, unit: 7 },
+  { word: "recycling bin", pos: "n.", meaning: "废物回收箱", phonetic: "/riːˈsaɪklɪŋ bɪn/", phrase: true, core: false, unit: 7 },
+  { word: "truck", pos: "n.", meaning: "卡车，货运汽车", phonetic: "/trʌk/", core: false, unit: 7 },
+  { word: "make friends with", pos: "短语", meaning: "和……交朋友", phonetic: "/meɪk frendz wɪð/", phrase: true, core: false, unit: 7 },
+  { word: "recycling centre", pos: "n.", meaning: "回收中心", phonetic: "/riːˈsaɪklɪŋ ˈsentə(r)/", phrase: true, core: false, unit: 7 },
+  { word: "go to sleep", pos: "短语", meaning: "睡觉", phonetic: "/ɡəʊ tu sliːp/", phrase: true, core: false, unit: 7 },
+  { word: "sort", pos: "v.", meaning: "把……分类", phonetic: "/sɔːt/", core: false, unit: 7 },
+  { word: "recycle", pos: "v.", meaning: "回收利用", phonetic: "/ˌriːˈsaɪkl/", core: false, unit: 7 },
+  { word: "grey", pos: "adj.", meaning: "灰色的", phonetic: "/ɡreɪ/", core: false, unit: 7 },
+  { word: "clever", pos: "adj.", meaning: "聪明的", phonetic: "/ˈklevə(r)/", core: false, unit: 7 },
+
+  // ===================== Unit 8 =====================
+  { word: "high-speed train", pos: "n.", meaning: "高速列车", phonetic: "/ˌhaɪˈspiːd treɪn/", phrase: true, core: false, unit: 8 },
+  { word: "e-book", pos: "n.", meaning: "电子书", phonetic: "/ˈiːbʊk/", core: false, unit: 8 },
+  { word: "meeting", pos: "n.", meaning: "会议，集会", phonetic: "/ˈmiːtɪŋ/", core: false, unit: 8 },
+  { word: "shop", pos: "n.", meaning: "商店，店铺", phonetic: "/ʃɒp/", core: true, unit: 8 },
+  { word: "smart", pos: "adj.", meaning: "智能的", phonetic: "/smɑːt/", core: false, unit: 8 },
+  { word: "win", pos: "v.", meaning: "获胜，赢", phonetic: "/wɪn/", core: true, unit: 8 },
+  { word: "surprise", pos: "n.", meaning: "意想不到的事，令人惊奇的事", phonetic: "/səˈpraɪz/", core: false, unit: 8 },
+  { word: "wrong", pos: "adj.", meaning: "有问题的", phonetic: "/rɒŋ/", core: false, unit: 8 },
+  { word: "change", pos: "n./v.", meaning: "变化；改变", phonetic: "/tʃeɪndʒ/", core: false, unit: 8 },
+  { word: "life", pos: "n.", meaning: "生活", phonetic: "/laɪf/", core: false, unit: 8 },
+  { word: "in the past", pos: "短语", meaning: "在过去", phonetic: "/ɪn ðə pɑːst/", phrase: true, core: false, unit: 8 },
+  { word: "travel", pos: "v.", meaning: "行进", phonetic: "/ˈtrævl/", core: true, unit: 8 },
+  { word: "office", pos: "n.", meaning: "办公室，办公楼", phonetic: "/ˈɒfɪs/", core: false, unit: 8 },
+  { word: "these days", pos: "短语", meaning: "如今，而今", phonetic: "/ðiːz deɪz/", phrase: true, core: false, unit: 8 },
+  { word: "work from home", pos: "短语", meaning: "居家办公", phonetic: "/wɜːk frɒm həʊm/", phrase: true, core: false, unit: 8 },
+  { word: "pay", pos: "v.", meaning: "付钱，支付", phonetic: "/peɪ/", core: false, unit: 8 },
+  { word: "cash", pos: "n.", meaning: "现金", phonetic: "/kæʃ/", core: false, unit: 8 },
+  { word: "helper", pos: "n.", meaning: "帮手，助手", phonetic: "/ˈhelpə(r)/", core: false, unit: 8 },
+  { word: "fifty", pos: "num.", meaning: "五十", phonetic: "/ˈfɪfti/", core: false, unit: 8 },
+  { word: "email", pos: "n.", meaning: "电子邮件", phonetic: "/ˈiːmeɪl/", core: true, unit: 8 },
+  { word: "technology", pos: "n.", meaning: "科技", phonetic: "/tekˈnɒlədʒi/", core: false, unit: 8 }
+];
+
+// 每个单元的标题
+var UNIT_TITLES = {
+  1: "Unit 1 · 戏剧与表演",
+  2: "Unit 2 · 诚实守信",
+  3: "Unit 3 · 名人与发明",
+  4: "Unit 4 · 生日与时间",
+  5: "Unit 5 · 环保行动",
+  6: "Unit 6 · 节约资源",
+  7: "Unit 7 · 回收利用",
+  8: "Unit 8 · 科技改变生活"
+};
+
+// 全局配置
+var CONFIG = {
+  dailyNewWords: 8,        // 每天新学单词数
+  dailyGoalGold: 20,       // 完成每日目标奖励金币
+  correctGold: 5,          // 答对一题金币
+  comboBonus: 2,           // 连击额外金币(每连击)
+  // 艾宾浩斯遗忘曲线复习间隔(天)
+  reviewIntervals: [0, 0.5, 1, 2, 4, 7, 15]
+};
+
+if (typeof window !== 'undefined') {
+  window.WORDS = WORDS;
+  window.UNIT_TITLES = UNIT_TITLES;
+  window.CONFIG = CONFIG;
+}
+
+</script>
+<script>
+// 六年级上册 单词例句与记忆口诀
+// 配套 words.js 使用：key 为 "word|unit" 组合（因为 last 在两个单元都有不同释义）
+// example: 简短英文例句 + 空格 + 中文翻译
+// memo: 中文记忆口诀（词根 / 谐音 / 拆分 / 联想）
+
+var WORDS_EXTRA = {
+  // ===================== Unit 1 · 戏剧与表演 =====================
+  "try one's best|1": { example: "I will try my best to learn English. 我会尽我最大的努力学英语。", memo: "try尝试+one's某人的+best最好，尽自己最大的努力" },
+  "act|1": { example: "He acted in the school play. 他在学校戏剧里表演。", memo: "词根act表示'做、行动'，加or变actor演员" },
+  "play|1": { example: "We saw a fun play at school. 我们在学校看了一出有趣的戏。", memo: "play既是'玩耍'又是'戏剧'，演戏就是玩着表演" },
+  "poster|1": { example: "I made a poster for the show. 我为演出做了一张海报。", memo: "post张贴+er物，张贴出来的画就是海报" },
+  "last|1": { example: "He was the last to leave. 他是最后一个离开的。", memo: "last谐音'拉死他'，落在最后面被拉扯" },
+  "take part|1": { example: "Will you take part in the game? 你会参加这个游戏吗？", memo: "take拿+part部分，拿出一部分精力来参与" },
+  "practise|1": { example: "I practise English every day. 我每天练习英语。", memo: "practise谐音'扑热息痛'，练习到头热也要坚持" },
+  "afraid|1": { example: "Don't be afraid of the dark. 别怕黑。", memo: "afraid谐音'啊，飞的'，怕天上飞来的东西" },
+  "calm down|1": { example: "Please calm down and listen. 请安静下来听我说。", memo: "calm谐音'卡姆'，卡住不动就冷静下来了" },
+  "begin|1": { example: "Let's begin the class now. 我们现在开始上课吧。", memo: "begin谐音'比干'，比着干就开始了" },
+  "forget|1": { example: "Don't forget your umbrella. 别忘了带伞。", memo: "for为了+get得到，光顾着得到反而忘了" },
+  "the words|1": { example: "I forgot the words of the song. 我忘了这首歌的歌词。", memo: "words单词，歌曲里的单词就是歌词" },
+  "remember|1": { example: "Please remember my number. 请记住我的号码。", memo: "re再+member成员，再次想起成员的名字" },
+  "finish|1": { example: "I will finish my homework soon. 我很快就会做完作业。", memo: "finish谐音'费尼许'，费力气才许完成" },
+  "keep|1": { example: "Keep walking and you'll arrive. 继续走你就会到。", memo: "keep谐音'基普'，基础要保持住" },
+  "ago|1": { example: "I met him a week ago. 我一周前遇见了他。", memo: "a一+go走，一个走过去的时间就是以前" },
+  "movement|1": { example: "The dancer's movement was beautiful. 舞者的动作很美。", memo: "move移动+ment名词后缀，移动的动作" },
+  "skill|1": { example: "Reading is an important skill. 阅读是重要的技能。", memo: "skill谐音'死磕'，死磕才能练成技能" },
+  "in front of|1": { example: "A tree is in front of the house. 房子前面有一棵树。", memo: "in在+front前面+of的，在……的前面" },
+  "ready|1": { example: "Are you ready for the test? 你准备好考试了吗？", memo: "ready谐音'瑞迪'，喊一声READY准备好啦" },
+  "long ago|1": { example: "Long ago, people had no phones. 很久以前人们没有手机。", memo: "long长+ago以前，很长久的以前" },
+  "snail|1": { example: "The snail moves very slowly. 蜗牛移动得很慢。", memo: "s+nail钉子，背着钉子壳慢慢爬的蜗牛" },
+  "top|1": { example: "He climbed to the top of the hill. 他爬到了山顶。", memo: "top谐音'套谱'，顶级的套路在顶端" },
+
+  // ===================== Unit 2 · 诚实守信 =====================
+  "honesty|2": { example: "Honesty is very important. 诚实很重要。", memo: "honest诚实的+y名词后缀，诚实这种品质" },
+  "storybook|2": { example: "I love reading storybooks. 我爱读故事书。", memo: "story故事+book书，装满故事的书" },
+  "lie|2": { example: "Don't tell a lie. 不要撒谎。", memo: "lie谐音'赖'，赖着不认账就是撒谎" },
+  "break|2": { example: "He broke the cup. 他打碎了杯子。", memo: "break谐音'布雷克'，踩到地雷就break炸碎" },
+  "yesterday|2": { example: "I saw him yesterday. 我昨天看见了他。", memo: "yester昨+day天，昨天的这一天" },
+  "repair|2": { example: "Dad can repair the bike. 爸爸会修自行车。", memo: "re再+pair配对，重新配好就是修理" },
+  "say|2": { example: "Please say it again. 请再说一遍。", memo: "say谐音'誓'，发誓说的话要算数" },
+  "poor|2": { example: "The poor man has no money. 那个穷人没有钱。", memo: "poor谐音'破'，穷得破破烂烂" },
+  "man|2": { example: "That man is my teacher. 那个男人是我的老师。", memo: "man就是'男人'，mankind人类里就有man" },
+  "old|2": { example: "My grandpa is very old. 我爷爷很老了。", memo: "old谐音'欧德'，像欧式老古董一样旧" },
+  "ox|2": { example: "The ox is working in the field. 牛在田里干活。", memo: "ox谐音'奥克斯'，像奥克斯一样壮的牛" },
+  "away from home|2": { example: "He is away from home. 他离开家了。", memo: "away离开+from从+home家，从家里离开" },
+  "nephew|2": { example: "My nephew is very cute. 我的侄子很可爱。", memo: "nephew谐音'奶夫'，吃奶长大的小侄子" },
+  "sell|2": { example: "They sell fresh fruit. 他们卖新鲜水果。", memo: "sell谐音'塞了'，把货塞给顾客就卖出去了" },
+  "buyer|2": { example: "The buyer paid for the book. 买主付了书钱。", memo: "buy买+er人，买东西的人就是买主" },
+  "get back|2": { example: "I want to get back my book. 我想拿回我的书。", memo: "get得到+back回，重新得到就是拿回" },
+  "name|2": { example: "He has a good name. 他有好的名声。", memo: "name名字，名声就是大家口中的名字" },
+  "watch|2": { example: "She watches the baby. 她照看那个婴儿。", memo: "watch既'手表'又'照看'，盯着看就是照看" },
+  "wolf|2": { example: "The wolf is hungry. 狼饿了。", memo: "wolf谐音'沃尔夫'，像沃尔夫一样凶的狼" },
+  "answer|2": { example: "Please answer my question. 请回答我的问题。", memo: "answer谐音'俺答'，俺来回答你的问题" },
+  "cry|2": { example: "The baby is crying. 婴儿在哭。", memo: "cry谐音'快哀'，快哀伤地哭起来" },
+
+  // ===================== Unit 3 · 名人与发明 =====================
+  "hero|3": { example: "He is my hero. 他是我的英雄。", memo: "hero就是英雄，heroic英雄的里也有hero" },
+  "famous|3": { example: "She is a famous singer. 她是一位著名的歌手。", memo: "fame名声+ous多的，名声多的就是著名的" },
+  "scientist|3": { example: "The scientist works hard. 那位科学家很努力。", memo: "science科学+ist人，做科学的人是科学家" },
+  "inventor|3": { example: "He is a great inventor. 他是一位伟大的发明家。", memo: "invent发明+or人，发明东西的人" },
+  "hybrid rice|3": { example: "Hybrid rice feeds many people. 杂交水稻养活了许多人。", memo: "hybrid杂交的+rice稻米，杂交的水稻" },
+  "dream|3": { example: "I have a big dream. 我有一个大梦想。", memo: "dream谐音'追梦'，追梦就是梦想" },
+  "cool|3": { example: "It is cool today. 今天很凉爽。", memo: "cool谐音'酷'，凉爽又酷" },
+  "all over the world|3": { example: "People all over the world love peace. 全世界的人都热爱和平。", memo: "all所有+over遍及+world世界，遍及全世界" },
+  "be born|3": { example: "I was born in Beijing. 我出生在北京。", memo: "be是+born出生，出生的状态" },
+  "pass away|3": { example: "His grandpa passed away last year. 他爷爷去年去世了。", memo: "pass通过+away离开，从世上离开即去世" },
+  "study|3": { example: "They study the stars. 他们研究星星。", memo: "study谐音'死的'，死读书也要研究" },
+  "call|3": { example: "We call him Tom. 我们叫他汤姆。", memo: "call谐音'叩'，叩门呼叫就是把……叫作" },
+  "come true|3": { example: "My dream came true. 我的梦想实现了。", memo: "come来+true真实，梦想来到现实中成真" },
+  "farming|3": { example: "He likes farming. 他喜欢务农。", memo: "farm农场+ing，在农场干活即务农" },
+  "age|3": { example: "What is your age? 你几岁了？", memo: "age就是'年龄'，aged年老的里也有age" },
+  "grow up|3": { example: "I want to grow up fast. 我想快点长大。", memo: "grow生长+up向上，向上生长即长大" },
+  "work on|3": { example: "She works on a new book. 她在写一本新书。", memo: "work工作+on在上面，在上面工作即从事" },
+  "difficult|3": { example: "This question is difficult. 这道题很难。", memo: "difficult谐音'地飞可特'，地上飞可特别难" },
+  "develop|3": { example: "They develop new apps. 他们开发新应用。", memo: "de出+velop包，从包裹里开发出新东西" },
+  "bamboo|3": { example: "Pandas eat bamboo. 熊猫吃竹子。", memo: "bamboo谐音'半步'，砍竹子只需半步" },
+  "silk|3": { example: "This silk is very soft. 这丝绸很柔软。", memo: "silk谐音'丝可'，丝可以织成丝绸" },
+  "dear|3": { example: "This dress is too dear. 这条裙子太贵了。", memo: "dear亲爱的，亲爱的东西卖得贵" },
+  "paper|3": { example: "I need some paper. 我需要一些纸。", memo: "paper就是'纸'，newspaper报纸里有paper" },
+  "at first|3": { example: "At first, I was shy. 起初我很害羞。", memo: "at在+first第一，在第一的时候即起初" },
+
+  // ===================== Unit 4 · 生日与时间 =====================
+  "ninth|4": { example: "September is the ninth month. 九月是第九个月。", memo: "nine九+th序数词后缀，第九" },
+  "lunar month|4": { example: "His birthday is a lunar month. 他的生日是农历某月。", memo: "lunar月亮的+month月，按月亮计算的农历月" },
+  "show|4": { example: "Please show me your book. 请给我看看你的书。", memo: "show谐音'秀'，展示秀出来" },
+  "love|4": { example: "I love my family. 我爱我的家人。", memo: "love谐音'乐福'，快乐幸福就是爱" },
+  "smartphone|4": { example: "My mom has a smartphone. 我妈妈有一部智能手机。", memo: "smart聪明的+phone电话，智能的手机" },
+  "wish|4": { example: "I wish you a happy birthday. 祝你生日快乐。", memo: "wish谐音'微许'，微微许愿祝愿你" },
+  "a long life|4": { example: "I wish grandpa a long life. 我祝爷爷长寿。", memo: "a一+long长+life生命，长长的生命即长寿" },
+  "blow out|4": { example: "Blow out the candles. 把蜡烛吹灭。", memo: "blow吹+out出，吹出去即吹灭" },
+  "candle|4": { example: "The candle is bright. 蜡烛很亮。", memo: "can能+dle，candle蜡烛能点亮黑夜" },
+  "photo|4": { example: "I took a photo of the park. 我拍了一张公园的照片。", memo: "photo就是'照片'，photograph的缩写" },
+  "time flies|4": { example: "Time flies when we play. 玩的时候时光飞逝。", memo: "time时间+flies飞，时间飞走即时光飞逝" },
+  "kid|4": { example: "The kids are playing games. 孩子们在玩游戏。", memo: "kid既'小孩'又'小山羊'，小孩像小山羊" },
+  "March|4": { example: "My birthday is in March. 我的生日在三月。", memo: "March三月，march行军，三月行军好时节" },
+  "April|4": { example: "It rains a lot in April. 四月常下雨。", memo: "April谐音'爱普瑞'，四月春暖花开" },
+  "July|4": { example: "School ends in July. 学校七月放假。", memo: "July七月，源于恺撒Julius的名字" },
+  "August|4": { example: "August is very hot. 八月很热。", memo: "August八月，源于奥古斯都Augustus" },
+  "November|4": { example: "It is cool in November. 十一月很凉爽。", memo: "November十一月，nov新+ember月" },
+
+  // ===================== Unit 5 · 环保行动 =====================
+  "rubbish bin|5": { example: "Put it in the rubbish bin. 把它扔进垃圾桶。", memo: "rubbish垃圾+bin桶，装垃圾的桶" },
+  "ground|5": { example: "The ball is on the ground. 球在地上。", memo: "ground就是'地面'，playground操场里有ground" },
+  "skin|5": { example: "I peel the apple skin. 我削苹果皮。", memo: "skin就是'皮肤'，香蕉皮就是banana skin" },
+  "pick up|5": { example: "Please pick up the pen. 请把笔捡起来。", memo: "pick捡+up起，捡起来" },
+  "throw|5": { example: "Don't throw stones. 不要扔石头。", memo: "throw谐音'揉'，揉成一团扔出去" },
+  "will|5": { example: "I will help you. 我会帮你的。", memo: "will就是'将'，will表示将来要做" },
+  "fall|5": { example: "Be careful, don't fall. 小心，别摔倒。", memo: "fall既是'秋天'又是'落下'，秋天树叶落下" },
+  "go plogging|5": { example: "Let's go plogging today. 我们今天去拾荒慢跑吧。", memo: "plogging=pick up捡+jogging慢跑，边跑边捡垃圾" },
+  "jogging|5": { example: "He goes jogging every morning. 他每天早上慢跑。", memo: "jog慢跑+ing，慢跑锻炼" },
+  "at the same time|5": { example: "We laughed at the same time. 我们同时笑了起来。", memo: "at在+the same同一+time时间，在同一时间即同时" },
+  "gate|5": { example: "Meet me at the gate. 在大门口等我。", memo: "gate谐音'给特'，大门给特别的客人开" },
+  "on time|5": { example: "Please come on time. 请准时来。", memo: "on在+time时间，在时间点上即准时" },
+  "cleaning|5": { example: "She is cleaning the room. 她在打扫房间。", memo: "clean打扫+ing，正在打扫" },
+  "group|5": { example: "We work in a group. 我们分组合作。", memo: "group就是'组/群'，group work小组合作" },
+  "start|5": { example: "They start a clean-up club. 他们发起了一个清洁俱乐部。", memo: "start和begin都表'开始'，start还可'发起'活动" },
+
+  // ===================== Unit 6 · 节约资源 =====================
+  "go green|6": { example: "Let's go green together. 让我们一起践行环保。", memo: "go去+green绿，去过绿色的环保生活" },
+  "turn off|6": { example: "Turn off the lights. 把灯关掉。", memo: "turn转+off关，转关即关掉" },
+  "tap|6": { example: "Turn off the tap. 关掉水龙头。", memo: "tap谐音'它'，它就是水龙头" },
+  "light|6": { example: "The light is on. 灯开着。", memo: "light就是'灯/光'，light light轻轻的灯" },
+  "both|6": { example: "Both boys are tall. 两个男孩都很高。", memo: "both就是'两者都'，both sides两边" },
+  "side|6": { example: "Stand on this side. 站在这边。", memo: "side就是'边/面'，beside在旁边有side" },
+  "eat up|6": { example: "Eat up your rice. 把饭吃完。", memo: "eat吃+up光，吃到光即吃光" },
+  "project|6": { example: "Our project is about water. 我们的项目是关于水的。", memo: "pro向前+ject扔，向前扔出即项目" },
+  "the Earth|6": { example: "We must love the Earth. 我们必须爱护地球。", memo: "the+Earth地球，earth土里生出地球" },
+  "colour|6": { example: "Colour the tree green. 把树涂成绿色。", memo: "colour就是'颜色'，给东西上色即着色" },
+  "hour|6": { example: "I read for an hour. 我读了一小时书。", memo: "hour就是'小时'，h不发音，our也读同音" },
+  "save|6": { example: "Save water, please. 请节约用水。", memo: "save就是'救/节省'，save water节约用水" },
+  "electricity|6": { example: "We use electricity every day. 我们每天用电。", memo: "electric电的+ity名词，电能" },
+  "last|6": { example: "The film lasts two hours. 这部电影持续两小时。", memo: "last既是'最后'又是'持续'，持续到最后" },
+  "brush|6": { example: "Brush your teeth every day. 每天刷牙。", memo: "brush就是'刷子'，brush teeth刷牙" },
+  "tooth|6": { example: "I have a bad tooth. 我有颗坏牙。", memo: "tooth就是'牙'，teeth是它的复数" },
+  "waste|6": { example: "Don't waste food. 不要浪费食物。", memo: "waste就是'浪费'，waste time浪费时间" },
+  "vegetable|6": { example: "I eat vegetables every day. 我每天吃蔬菜。", memo: "vegetable谐音'喂鸡特饱'，蔬菜喂鸡吃得特饱" },
+  "plastic|6": { example: "Don't use plastic bags. 不要用塑料袋。", memo: "plastic就是'塑料'，plastic bag塑料袋" },
+
+  // ===================== Unit 7 · 回收利用 =====================
+  "glass|7": { example: "The glass is clear. 玻璃很透明。", memo: "glass就是'玻璃'，glasses眼镜由玻璃做" },
+  "bottle|7": { example: "This bottle is empty. 这个瓶子是空的。", memo: "bottle就是'瓶子'，water bottle水瓶" },
+  "cardboard|7": { example: "The box is made of cardboard. 这个盒子是硬纸板做的。", memo: "card卡片+board板，硬卡片板即硬纸板" },
+  "box|7": { example: "Open the box, please. 请打开这个盒子。", memo: "box就是'盒子'，box box盒子" },
+  "be made of|7": { example: "The desk is made of wood. 书桌是木头做的。", memo: "be是+made制造+of由，由……制造即用……做的" },
+  "button|7": { example: "A button is on my shirt. 我的衬衫上有一颗纽扣。", memo: "button就是'纽扣'，按钮纽扣都叫button" },
+  "happen|7": { example: "What will happen next? 接下来会发生什么？", memo: "happen=hap运气+pen，运气降临就发生" },
+  "hat|7": { example: "He wears a funny hat. 他戴着一顶有趣的帽子。", memo: "hat就是'帽子'，hat戴在头上" },
+  "do with|7": { example: "What will you do with it? 你打算怎么处理它？", memo: "do做+with用，用……做即处理" },
+  "throw away|7": { example: "Don't throw away the paper. 不要扔掉那张纸。", memo: "throw扔+away离开，扔到离开即扔掉" },
+  "recycling bin|7": { example: "Put bottles in the recycling bin. 把瓶子放进回收箱。", memo: "recycle回收+ing+bin箱，回收箱" },
+  "truck|7": { example: "The truck carries boxes. 卡车运送箱子。", memo: "truck就是'卡车'，truck卡车运货" },
+  "make friends with|7": { example: "I make friends with him. 我和他交朋友。", memo: "make交+friends朋友+with和，和……交朋友" },
+  "recycling centre|7": { example: "We go to the recycling centre. 我们去回收中心。", memo: "recycling回收+centre中心，回收中心" },
+  "go to sleep|7": { example: "I go to sleep at nine. 我九点睡觉。", memo: "go去+to到+sleep睡，去睡觉" },
+  "sort|7": { example: "Sort the rubbish, please. 请把垃圾分类。", memo: "sort就是'分类'，sort out整理分类" },
+  "recycle|7": { example: "We recycle old paper. 我们回收利用废纸。", memo: "re再+cycle循环，再次循环即回收利用" },
+  "grey|7": { example: "The sky is grey today. 今天天是灰色的。", memo: "grey就是'灰色'，grey和gray都表灰色" },
+  "clever|7": { example: "The clever dog can count. 那只聪明的狗会数数。", memo: "clever里藏'lever杠杆'，会用杠杆的clever聪明" },
+
+  // ===================== Unit 8 · 科技改变生活 =====================
+  "high-speed train|8": { example: "The high-speed train is fast. 高速列车很快。", memo: "high高+speed速+train火车，高速列车" },
+  "e-book|8": { example: "I read an e-book online. 我在网上读电子书。", memo: "e电子+book书，电子书" },
+  "meeting|8": { example: "We have a meeting today. 我们今天有会议。", memo: "meet见面+ing，开会集会即会议" },
+  "shop|8": { example: "There is a shop near my home. 我家附近有一家商店。", memo: "shop就是'商店'，shopping购物里有shop" },
+  "smart|8": { example: "This is a smart TV. 这是一台智能电视。", memo: "smart就是'聪明的/智能的'，smartphone智能手机" },
+  "win|8": { example: "Our team will win. 我们队会赢。", memo: "win谐音'稳'，稳赢就是获胜" },
+  "surprise|8": { example: "What a big surprise! 真是个大惊喜！", memo: "surprise谐音'瑟普拉兹'，令人瑟瑟发抖的惊喜" },
+  "wrong|8": { example: "Something is wrong with it. 它有点问题。", memo: "wrong里w不发音，wrong就是'错的/有问题的'" },
+  "change|8": { example: "The weather changes a lot. 天气变化很大。", memo: "change就是'改变'，change变化change零钱" },
+  "life|8": { example: "Life is beautiful. 生活很美好。", memo: "life就是'生活/生命'，lifestyle生活方式" },
+  "in the past|8": { example: "In the past, we wrote letters. 在过去我们写信。", memo: "in在+the+past过去，在过去" },
+  "travel|8": { example: "I travel by train. 我坐火车旅行。", memo: "travel就是'旅行'，travel travel到处行进" },
+  "office|8": { example: "Mom works in an office. 妈妈在办公室工作。", memo: "office就是'办公室'，officer官员里有office" },
+  "these days|8": { example: "These days, I read a lot. 如今我读很多书。", memo: "these这些+days天，这些天即如今" },
+  "work from home|8": { example: "Dad works from home. 爸爸居家办公。", memo: "work工作+from从+home家，从家里工作即居家办公" },
+  "pay|8": { example: "I pay for the book. 我付书钱。", memo: "pay就是'支付'，pay付款pay付钱" },
+  "cash|8": { example: "I pay in cash. 我用现金付款。", memo: "cash谐音'凯什'，凯旋用什么付？付现金cash" },
+  "helper|8": { example: "She is a good helper. 她是个好帮手。", memo: "help帮助+er人，帮助的人即帮手" },
+  "fifty|8": { example: "I have fifty yuan. 我有五十元。", memo: "five变fif+ty，五十" },
+  "email|8": { example: "I send an email to my friend. 我给朋友发电子邮件。", memo: "e电子+mail邮件，电子邮件" },
+  "technology|8": { example: "Technology changes our life. 科技改变我们的生活。", memo: "tech技术+ology学问，技术的学问即科技" }
+};
+
+if (typeof window !== 'undefined') window.WORDS_EXTRA = WORDS_EXTRA;
+
+</script>
+<style>
+:root{
+  --primary:#7c5cff; --primary-d:#5a3fd6; --accent:#ffb43a; --pink:#ff6b9d;
+  --green:#34d399; --red:#f87171; --blue:#38bdf8;
+  --bg:#f4f1ff; --card:#fff; --text:#2d2a4a; --muted:#8b88a8;
+  --shadow:0 8px 24px rgba(124,92,255,.15); --radius:18px;
+  --border:#eceaf6;
+}
+html.dark{
+  --bg:#14121f; --card:#1f1d2e; --text:#e8e6f5; --muted:#8b88a8;
+  --border:#2d2a40; --shadow:0 8px 24px rgba(0,0,0,.4);
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{font-family:'PingFang SC','Microsoft YaHei',-apple-system,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;line-height:1.6;transition:background .3s,color .3s}
+button{font-family:inherit;cursor:pointer;border:none;outline:none}
+input,select{font-family:inherit}
+/* ===== 顶部 ===== */
+.topbar{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:10px 16px;gap:8px}
+html.dark .topbar{background:rgba(31,29,46,.92)}
+.logo{font-weight:800;font-size:17px;background:linear-gradient(135deg,var(--primary),var(--pink));-webkit-background-clip:text;-webkit-text-fill-color:transparent;white-space:nowrap}
+.stats-mini{display:flex;gap:6px;align-items:center}
+.chip{background:var(--card);border:1.5px solid var(--border);border-radius:30px;padding:4px 11px;font-size:13px;font-weight:700;display:flex;align-items:center;gap:3px;white-space:nowrap;color:var(--text)}
+.chip.gold{color:#d4a017;border-color:#ffe08a;background:#fffdf3}
+.chip.btn{cursor:pointer}
+html.dark .chip.gold{background:#2a2410}
+.icon-btn{width:34px;height:34px;border-radius:50%;background:var(--card);border:1.5px solid var(--border);font-size:16px;display:flex;align-items:center;justify-content:center;color:var(--text)}
+/* ===== 页面 ===== */
+.page{display:none;max-width:680px;margin:0 auto;padding:14px}
+.page.active{display:block;animation:fade .3s}
+@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+/* ===== 首页 hero ===== */
+.hero-card{background:linear-gradient(135deg,#7c5cff,#9d7bff);color:#fff;border-radius:24px;padding:22px 20px;box-shadow:var(--shadow);position:relative;overflow:hidden}
+.hero-card::before{content:'';position:absolute;right:-40px;top:-40px;width:150px;height:150px;background:rgba(255,255,255,.1);border-radius:50%}
+.hero-card::after{content:'';position:absolute;left:-30px;bottom:-50px;width:100px;height:100px;background:rgba(255,255,255,.08);border-radius:50%}
+.streak-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.2);padding:6px 14px;border-radius:30px;font-weight:700;font-size:13px;margin-bottom:12px}
+.hero-row{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.hero-emoji{font-size:36px}
+.hero-title{font-size:20px;font-weight:800}
+.hero-sub{opacity:.9;font-size:13px}
+.hero-stats{display:flex;gap:10px}
+.hero-stat{flex:1;background:rgba(255,255,255,.15);border-radius:14px;padding:9px 6px;text-align:center}
+.hero-stat .num{font-size:20px;font-weight:800}
+.hero-stat .lbl{font-size:10px;opacity:.85}
+.level-bar{background:rgba(255,255,255,.2);border-radius:10px;height:7px;margin-top:12px;overflow:hidden}
+.level-bar>div{height:100%;background:var(--accent);border-radius:10px;transition:width .6s}
+/* 按钮 */
+.big-btn{width:100%;background:linear-gradient(135deg,var(--accent),#ff9d3a);color:#fff;font-size:18px;font-weight:800;padding:15px;border-radius:16px;box-shadow:0 6px 16px rgba(255,180,58,.4);transition:transform .15s,box-shadow .15s}
+.big-btn:active{transform:scale(.97);box-shadow:0 3px 8px rgba(255,180,58,.4)}
+.big-btn.secondary{background:var(--card);color:var(--primary);box-shadow:0 4px 12px rgba(124,92,255,.12);font-size:15px;padding:13px}
+.big-btn.green{background:linear-gradient(135deg,var(--green),#10b981);box-shadow:0 6px 16px rgba(52,211,153,.4)}
+.section-title{font-size:16px;font-weight:800;margin:20px 4px 10px;display:flex;align-items:center;gap:6px;justify-content:space-between}
+.section-title>span:first-child{display:flex;align-items:center;gap:6px}
+.section-title .more{font-size:12px;color:var(--muted);font-weight:600}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+.mini-card{background:var(--card);border-radius:var(--radius);padding:14px;box-shadow:0 4px 14px rgba(0,0,0,.05);text-align:center;transition:transform .15s;border:1.5px solid var(--border)}
+html.dark .mini-card{box-shadow:0 4px 14px rgba(0,0,0,.2)}
+.mini-card:active{transform:scale(.96)}
+.mini-card .ico{font-size:28px;margin-bottom:4px}
+.mini-card .t{font-weight:700;font-size:13px}
+.mini-card .d{font-size:11px;color:var(--muted);margin-top:2px}
+/* 进度环 */
+.ring-wrap{display:flex;align-items:center;justify-content:center;gap:18px;flex-wrap:wrap;background:var(--card);border-radius:var(--radius);padding:16px;box-shadow:0 4px 14px rgba(0,0,0,.05);border:1.5px solid var(--border)}
+html.dark .ring-wrap{box-shadow:0 4px 14px rgba(0,0,0,.2)}
+.ring{position:relative;width:108px;height:108px;flex-shrink:0}
+.ring svg{transform:rotate(-90deg)}
+.ring .pct{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;font-weight:800}
+.ring .pct .big{font-size:24px;color:var(--primary)}
+.ring .pct .sm{font-size:10px;color:var(--muted)}
+/* ===== 学习页 ===== */
+.progress-top{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.progress-top .back{font-size:20px;cursor:pointer;width:34px;height:34px;border-radius:50%;background:var(--card);display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,0,0,.08);border:1.5px solid var(--border);flex-shrink:0}
+.progress-bar{flex:1;height:10px;background:var(--border);border-radius:6px;overflow:hidden}
+.progress-bar>div{height:100%;background:linear-gradient(90deg,var(--primary),var(--pink));border-radius:6px;transition:width .4s}
+.progress-label{font-size:12px;color:var(--muted);font-weight:700;white-space:nowrap}
+.card-box{background:var(--card);border-radius:24px;padding:24px 20px;box-shadow:var(--shadow);text-align:center;min-height:360px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;position:relative;border:1.5px solid var(--border)}
+.word-unit-tag{position:absolute;top:12px;left:14px;font-size:11px;font-weight:700;color:var(--muted);background:var(--bg);padding:3px 10px;border-radius:20px}
+.word-mode-tag{position:absolute;top:12px;right:14px;font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px}
+.word-mode-tag.new{background:#e6fff5;color:#059669}
+.word-mode-tag.review{background:#fff5e6;color:#e88a00}
+.word-en{font-size:36px;font-weight:800;color:var(--text);letter-spacing:.5px}
+.word-en.phrase{font-size:24px}
+.word-phon{font-size:15px;color:var(--muted);font-style:italic}
+.word-pos{display:inline-block;background:#f0ecff;color:var(--primary);padding:2px 11px;border-radius:20px;font-size:12px;font-weight:700}
+html.dark .word-pos{background:#2d2845}
+.word-cn{font-size:22px;font-weight:700;color:var(--primary-d)}
+.word-example{background:var(--bg);border-radius:12px;padding:10px 14px;font-size:13px;color:var(--text);max-width:100%;text-align:left;line-height:1.5}
+.word-example b{color:var(--primary)}
+.word-example .cn{color:var(--muted);font-size:12px;display:block;margin-top:2px}
+.word-memo{background:linear-gradient(135deg,#fff8e6,#ffeacd);border-radius:12px;padding:9px 13px;font-size:12px;color:#8a5a00;text-align:left;line-height:1.5;border-left:3px solid var(--accent)}
+html.dark .word-memo{background:#2a2410;color:#ffd970}
+.memo-label{font-weight:800;margin-right:4px}
+.speak-btn{background:#f0ecff;color:var(--primary);width:44px;height:44px;border-radius:50%;font-size:19px;display:flex;align-items:center;justify-content:center;transition:transform .15s}
+html.dark .speak-btn{background:#2d2845}
+.speak-btn:active{transform:scale(.9)}
+.actions{display:flex;gap:10px;margin-top:10px;width:100%}
+.btn{flex:1;padding:13px;border-radius:14px;font-size:15px;font-weight:700;transition:transform .15s}
+.btn:active{transform:scale(.96)}
+.btn-primary{background:var(--primary);color:#fff}
+.btn-warn{background:#fff5e6;color:#e88a00}
+html.dark .btn-warn{background:#3a2f15}
+.btn-next{background:linear-gradient(135deg,var(--green),#10b981);color:#fff}
+.btn-ghost{background:var(--bg);color:var(--text);border:1.5px solid var(--border)}
+/* 测验 */
+.quiz-prompt{font-size:14px;color:var(--muted);margin-bottom:4px}
+.quiz-q{font-size:26px;font-weight:800;text-align:center;margin-bottom:14px}
+.quiz-q.small{font-size:18px}
+.options{display:grid;gap:9px;width:100%}
+.opt{background:var(--bg);border:2px solid transparent;border-radius:14px;padding:14px;font-size:15px;font-weight:600;text-align:center;transition:all .15s;color:var(--text)}
+html.dark .opt{background:#28253d}
+.opt:active{transform:scale(.97)}
+.opt.correct{background:#e6fff5;border-color:var(--green);color:#059669}
+.opt.wrong{background:#fff0f0;border-color:var(--red);color:#dc2626}
+html.dark .opt.correct{background:#0f2e22}
+html.dark .opt.wrong{background:#2e1518}
+.opt:disabled{cursor:default}
+.spell-input{width:100%;font-size:20px;font-weight:700;text-align:center;padding:13px;border:3px solid var(--border);border-radius:14px;outline:none;background:var(--card);color:var(--text)}
+.spell-input:focus{border-color:var(--primary)}
+.spell-input.correct{border-color:var(--green);background:#f0fff8}
+.spell-input.wrong{border-color:var(--red);background:#fff5f5}
+.feedback{font-size:15px;font-weight:700;text-align:center;padding:10px;border-radius:12px;margin-top:8px}
+.feedback.ok{background:#e6fff5;color:#059669}
+.feedback.no{background:#fff0f0;color:#dc2626}
+html.dark .feedback.ok{background:#0f2e22}
+html.dark .feedback.no{background:#2e1518}
+/* 完成页 */
+.done-emoji{font-size:60px;text-align:center;margin:6px 0;animation:bounce .6s}
+@keyframes bounce{0%,100%{transform:scale(1)}50%{transform:scale(1.2)}}
+.done-title{font-size:22px;font-weight:800;text-align:center;color:var(--primary)}
+.done-stats{display:flex;justify-content:center;gap:10px;margin:16px 0;flex-wrap:wrap}
+.done-stat{background:var(--bg);border-radius:14px;padding:11px 14px;text-align:center;min-width:80px}
+.done-stat .n{font-size:22px;font-weight:800;color:var(--primary)}
+.done-stat .l{font-size:11px;color:var(--muted)}
+/* 金币飞 */
+.coin-fly{position:fixed;font-size:22px;pointer-events:none;z-index:999;animation:flyUp 1s ease-out forwards}
+@keyframes flyUp{0%{opacity:1;transform:translateY(0) scale(1)}100%{opacity:0;transform:translateY(-80px) scale(1.6)}}
+.combo-pop{position:fixed;top:45%;left:50%;font-size:42px;font-weight:900;color:var(--accent);text-shadow:0 2px 10px rgba(0,0,0,.2);z-index:250;pointer-events:none;animation:cpop .7s}
+@keyframes cpop{0%{opacity:0;transform:translate(-50%,-50%) scale(.5)}30%{opacity:1;transform:translate(-50%,-80%) scale(1.3)}100%{opacity:0;transform:translate(-50%,-120%) scale(1)}}
+/* 列表 */
+.list-card{background:var(--card);border-radius:var(--radius);padding:13px 15px;box-shadow:0 4px 12px rgba(0,0,0,.05);margin-bottom:9px;display:flex;align-items:center;gap:11px;border:1.5px solid var(--border)}
+html.dark .list-card{box-shadow:0 4px 12px rgba(0,0,0,.2)}
+.list-card .lt{font-weight:700;font-size:14px}
+.list-card .ld{font-size:12px;color:var(--muted)}
+.list-card .lr{margin-left:auto;font-size:13px;font-weight:700;color:var(--primary)}
+.badge{font-size:28px;width:50px;height:50px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:var(--bg);flex-shrink:0}
+.badge.locked{filter:grayscale(1);opacity:.35}
+.badge.sm{width:40px;height:40px;font-size:22px}
+/* 热力图 */
+.heatmap{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin:6px 0}
+.heat-cell{aspect-ratio:1;border-radius:4px;background:var(--border);font-size:9px;display:flex;align-items:center;justify-content:center;color:var(--muted)}
+.heat-cell.l1{background:#d8d3f7}
+.heat-cell.l2{background:#b3a8f0}
+.heat-cell.l3{background:#7c5cff;color:#fff}
+.heat-cell.l4{background:#5a3fd6;color:#fff}
+html.dark .heat-cell{background:#2a2740}
+/* 场景通用 */
+.scene-area{text-align:center;padding:10px 0}
+.scene-stage{font-size:74px;line-height:1.2;transition:all .5s;min-height:90px;display:flex;align-items:center;justify-content:center}
+.scene-name{font-weight:800;font-size:18px;margin:6px 0}
+.scene-desc{color:var(--muted);font-size:13px;max-width:300px;margin:0 auto}
+.exp-bar-wrap{margin:14px auto;max-width:300px}
+.exp-bar-label{font-size:12px;color:var(--muted);margin-bottom:4px;display:flex;justify-content:space-between}
+.exp-bar{background:var(--border);height:10px;border-radius:6px;overflow:hidden}
+.exp-bar>div{height:100%;border-radius:6px;transition:width .6s}
+/* 弹窗 */
+.modal-mask{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;display:none;align-items:center;justify-content:center;padding:20px}
+.modal-mask.show{display:flex}
+.modal{background:var(--card);border-radius:24px;padding:24px;max-width:360px;width:100%;text-align:center;animation:pop .3s;border:1.5px solid var(--border)}
+@keyframes pop{from{transform:scale(.8);opacity:0}to{transform:scale(1);opacity:1}}
+.modal h3{font-size:19px;margin-bottom:6px}
+.modal p{color:var(--muted);font-size:14px;margin-bottom:14px;white-space:pre-line}
+.modal .btn{margin-top:4px}
+.modal-plan{text-align:left}
+.modal-plan .plan-row{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);font-size:14px}
+.modal-plan .plan-row:last-child{border:none}
+.modal-plan .plan-row b{color:var(--primary)}
+/* Toast */
+.toast{position:fixed;top:64px;left:50%;transform:translateX(-50%);background:rgba(45,42,74,.95);color:#fff;padding:10px 20px;border-radius:30px;font-size:14px;font-weight:600;z-index:300;animation:tin .3s;max-width:90%;text-align:center}
+@keyframes tin{from{opacity:0;transform:translate(-50%,-10px)}to{opacity:1;transform:translateX(-50%)}}
+/* 底部导航 */
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-top:1px solid var(--border);display:flex;z-index:90;max-width:680px;margin:0 auto}
+html.dark .bottom-nav{background:#1f1d2e}
+.nav-item{flex:1;padding:7px 0;text-align:center;font-size:10px;color:var(--muted);font-weight:600;cursor:pointer}
+.nav-item .ni{font-size:21px;display:block;line-height:1.3}
+.nav-item.active{color:var(--primary)}
+.pad-bottom{height:64px}
+/* 全面屏底部安全区适配 */
+.bottom-nav{padding-bottom:env(safe-area-inset-bottom,0)}
+.topbar{padding-top:env(safe-area-inset-top,0)}
+/* 触摸优化：取消点击高亮、提升响应 */
+*{-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+button{touch-action:manipulation}
+/* 设置 */
+.setting-row{display:flex;justify-content:space-between;align-items:center;padding:13px 0;border-bottom:1px solid var(--border)}
+.setting-row:last-child{border:none}
+.setting-row .lbl{font-weight:600;font-size:14px}
+.setting-row .sub{font-size:11px;color:var(--muted)}
+.btn-danger{background:#fff0f0;color:var(--red);border:1px solid #ffcaca;padding:8px 14px;border-radius:10px;font-size:13px;font-weight:700}
+html.dark .btn-danger{background:#2e1518;border-color:#5a2a2a}
+.toggle{width:44px;height:25px;background:var(--border);border-radius:13px;position:relative;cursor:pointer;transition:.2s;flex-shrink:0}
+.toggle.on{background:var(--green)}
+.toggle::after{content:'';position:absolute;width:21px;height:21px;background:#fff;border-radius:50%;top:2px;left:2px;transition:.2s}
+.toggle.on::after{left:21px}
+.empty{text-align:center;color:var(--muted);padding:30px;font-size:14px}
+/* 日历 */
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;margin-top:8px}
+.cal-cell{aspect-ratio:1;border-radius:6px;background:var(--bg);font-size:10px;display:flex;align-items:center;justify-content:center;color:var(--muted);position:relative}
+.cal-cell.has{background:#d8d3f7;color:var(--text);font-weight:700}
+.cal-cell.has.l2{background:#b3a8f0}
+.cal-cell.has.l3{background:#7c5cff;color:#fff}
+.cal-cell.today{outline:2px solid var(--accent);outline-offset:-2px}
+.cal-head{font-size:10px;color:var(--muted);text-align:center;padding:3px 0;font-weight:700}
+@media(max-width:380px){.word-en{font-size:30px}.hero-stat .num{font-size:17px}.grid3{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body>
+
+<!-- 顶部 -->
+<div class="topbar">
+  <div class="logo">🚀 单词大冒险</div>
+  <div class="stats-mini">
+    <div class="chip gold">🪙 <span id="navGold">0</span></div>
+    <div class="chip">🔥 <span id="navStreak">0</span></div>
+    <div class="icon-btn" id="themeBtn">🌙</div>
+  </div>
+</div>
+
+<!-- ===== 首页 ===== -->
+<div class="page active" id="page-home">
+  <div class="hero-card">
+    <div class="streak-badge">🔥 连续打卡 <span id="homeStreak">0</span> 天</div>
+    <div class="hero-row">
+      <div class="hero-emoji" id="heroEmoji">🐣</div>
+      <div>
+        <div class="hero-title">Hi, <span id="homeName">同学</span>! 👋</div>
+        <div class="hero-sub" id="homeTip">今天也要加油背单词哦～</div>
+      </div>
+    </div>
+    <div class="hero-stats">
+      <div class="hero-stat"><div class="num" id="homeLevel">1</div><div class="lbl">等级</div></div>
+      <div class="hero-stat"><div class="num" id="homeLearned">0</div><div class="lbl">已学单词</div></div>
+      <div class="hero-stat"><div class="num" id="homeReview">0</div><div class="lbl">待复习</div></div>
+    </div>
+    <div class="level-bar"><div id="homeLevelBar" style="width:0%"></div></div>
+  </div>
+
+  <button class="big-btn" id="startBtn">🎯 开始今日学习</button>
+  <div id="extraBtns" style="margin-top:10px;display:flex;gap:10px">
+    <button class="big-btn secondary" id="reviewBtn" style="flex:1;display:none">📖 复习 (<span id="reviewCount">0</span>)</button>
+    <button class="big-btn green" id="moreBtn" style="flex:1;display:none">➕ 继续学新词</button>
+  </div>
+
+  <div class="section-title"><span>📊 学习进度</span></div>
+  <div class="ring-wrap">
+    <div class="ring">
+      <svg width="108" height="108">
+        <circle cx="54" cy="54" r="47" fill="none" stroke="var(--border)" stroke-width="9"/>
+        <circle id="ringCircle" cx="54" cy="54" r="47" fill="none" stroke="url(#grad)" stroke-width="9" stroke-linecap="round" stroke-dasharray="295" stroke-dashoffset="295"/>
+        <defs><linearGradient id="grad"><stop offset="0%" stop-color="#7c5cff"/><stop offset="100%" stop-color="#ff6b9d"/></linearGradient></defs>
+      </svg>
+      <div class="pct"><span class="big" id="ringPct">0%</span><span class="sm">总进度</span></div>
+    </div>
+    <div style="font-size:12px;color:var(--muted)">
+      <div>📚 共 <b id="totalWords">0</b> 个</div>
+      <div>✅ 已掌握 <b id="masteredWords">0</b></div>
+      <div>🔄 复习中 <b id="reviewingWords">0</b></div>
+      <div>🆕 未学 <b id="remainWords">0</b></div>
+    </div>
+  </div>
+
+  <div class="section-title"><span>🎮 学习场景</span><span class="more">用金币解锁</span></div>
+  <div class="grid2" id="sceneGrid"></div>
+
+  <div class="section-title"><span>🛠️ 更多</span></div>
+  <div class="grid2">
+    <div class="mini-card" data-nav="wrongbook"><div class="ico">📕</div><div class="t">错词本</div><div class="d">针对性复习</div></div>
+    <div class="mini-card" data-nav="calendar"><div class="ico">📅</div><div class="t">学习日历</div><div class="d">复习计划</div></div>
+    <div class="mini-card" data-nav="stats"><div class="ico">📈</div><div class="t">统计成就</div><div class="d">进度一览</div></div>
+    <div class="mini-card" data-nav="settings"><div class="ico">⚙️</div><div class="t">设置</div><div class="d">主题/数据</div></div>
+  </div>
+</div>
+
+<!-- ===== 学习页 ===== -->
+<div class="page" id="page-learn">
+  <div class="progress-top">
+    <div class="back" id="learnBack">←</div>
+    <div class="progress-bar"><div id="learnProgress" style="width:0%"></div></div>
+    <div class="progress-label" id="learnLabel">1/8</div>
+  </div>
+  <div id="learnContent"></div>
+</div>
+
+<!-- ===== 场景页(通用容器) ===== -->
+<div class="page" id="page-scene">
+  <div class="progress-top"><div class="back" data-nav="home">←</div><div class="progress-label" style="font-size:16px;font-weight:800" id="sceneTitle">场景</div></div>
+  <div id="sceneContent"></div>
+</div>
+
+<!-- ===== 挑战 ===== -->
+<div class="page" id="page-challenge">
+  <div class="progress-top"><div class="back" data-nav="home">←</div><div class="progress-label" style="font-size:16px;font-weight:800">⏱️ 每日挑战</div></div>
+  <div id="challengeArea"></div>
+</div>
+
+<!-- ===== 错词本 ===== -->
+<div class="page" id="page-wrongbook">
+  <div class="progress-top"><div class="back" data-nav="home">←</div><div class="progress-label" style="font-size:16px;font-weight:800">📕 错词本</div></div>
+  <div id="wrongList"></div>
+</div>
+
+<!-- ===== 日历 ===== -->
+<div class="page" id="page-calendar">
+  <div class="progress-top"><div class="back" data-nav="home">←</div><div class="progress-label" style="font-size:16px;font-weight:800">📅 学习日历</div></div>
+  <div id="calendarArea"></div>
+</div>
+
+<!-- ===== 统计 ===== -->
+<div class="page" id="page-stats">
+  <div class="progress-top"><div class="back" data-nav="home">←</div><div class="progress-label" style="font-size:16px;font-weight:800">📈 学习统计</div></div>
+  <div class="section-title" style="margin-top:8px"><span>🗓️ 近50天热力图</span></div>
+  <div class="ring-wrap" style="display:block"><div class="heatmap" id="heatmap"></div></div>
+  <div class="section-title"><span>🏆 成就墙</span><span class="more" id="achCount">0/0</span></div>
+  <div id="achievementWall"></div>
+  <div class="section-title"><span>📊 详细数据</span></div>
+  <div class="ring-wrap" style="display:block" id="detailStats"></div>
+</div>
+
+<!-- ===== 设置 ===== -->
+<div class="page" id="page-settings">
+  <div class="progress-top"><div class="back" data-nav="home">←</div><div class="progress-label" style="font-size:16px;font-weight:800">⚙️ 设置</div></div>
+  <div class="ring-wrap" style="display:block;text-align:left">
+    <div class="setting-row"><div><div class="lbl">👦 我的名字</div></div><input id="setName" style="border:1.5px solid var(--border);border-radius:8px;padding:6px 10px;font-size:14px;width:120px;text-align:right;background:var(--card);color:var(--text)"></div>
+    <div class="setting-row"><div><div class="lbl">🔊 自动发音</div><div class="sub">展示单词时自动朗读</div></div><div class="toggle" id="setAutoSpeak"></div></div>
+    <div class="setting-row"><div><div class="lbl">📊 每轮新词数</div><div class="sub">每轮学习的新单词数量</div></div><select id="setDaily" style="border:1.5px solid var(--border);border-radius:8px;padding:6px;font-size:14px;background:var(--card);color:var(--text)"><option>4</option><option selected>8</option><option>12</option><option>16</option></select></div>
+    <div class="setting-row"><div><div class="lbl">🌙 深色模式</div><div class="sub">护眼夜间主题</div></div><div class="toggle" id="setDark"></div></div>
+  </div>
+  <div class="section-title"><span>💾 数据管理</span></div>
+  <div class="ring-wrap" style="display:block">
+    <div class="setting-row"><div><div class="lbl">📤 导出学习数据</div><div class="sub">备份到文件</div></div><button class="btn btn-ghost" style="flex:none;padding:8px 14px;font-size:13px" id="exportBtn">导出</button></div>
+    <div class="setting-row"><div><div class="lbl">📥 导入学习数据</div><div class="sub">从备份恢复</div></div><button class="btn btn-ghost" style="flex:none;padding:8px 14px;font-size:13px" id="importBtn">导入</button></div>
+    <div class="setting-row"><div><div class="lbl">🗑️ 重置所有进度</div><div class="sub">清空全部数据</div></div><button class="btn-danger" id="resetBtn">重置</button></div>
+  </div>
+  <input type="file" id="importFile" accept=".json" style="display:none">
+  <div class="section-title"><span>ℹ️ 关于</span></div>
+  <div class="ring-wrap" style="display:block;text-align:center;font-size:13px;color:var(--muted)">
+    单词大冒险 v2.0<br>六年级上册 · 8单元159词<br>结合艾宾浩斯遗忘曲线<br>用金币养成多个学习场景
+  </div>
+</div>
+
+<div class="pad-bottom"></div>
+
+<!-- 底部导航 -->
+<div class="bottom-nav">
+  <div class="nav-item active" data-nav="home"><span class="ni">🏠</span>首页</div>
+  <div class="nav-item" data-nav="wrongbook"><span class="ni">📕</span>错词</div>
+  <div class="nav-item" data-nav="challenge"><span class="ni">🎮</span>挑战</div>
+  <div class="nav-item" data-nav="stats"><span class="ni">📈</span>统计</div>
+</div>
+
+<!-- 弹窗 -->
+<div class="modal-mask" id="modalMask"><div class="modal" id="modalBox"></div></div>
+
+<script>
+/* ============================================================
+   单词大冒险 v2.0
+   艾宾浩斯遗忘曲线 / 每天多轮学习 / 多场景游戏化 / 深色模式
+   ============================================================ */
+var STORE_KEY = 'wordAdventure_v2';
+var D = CONFIG;
+
+/* ---------- 等级 ---------- */
+var LEVELS = [
+  {min:0, name:'英语小萌新', emoji:'🐣'},
+  {min:80, name:'单词新兵', emoji:'🐥'},
+  {min:200, name:'词汇学徒', emoji:'🐰'},
+  {min:400, name:'单词达人', emoji:'🦊'},
+  {min:700, name:'词汇能手', emoji:'🦁'},
+  {min:1100, name:'单词高手', emoji:'🐯'},
+  {min:1600, name:'词汇大师', emoji:'🦅'},
+  {min:2300, name:'单词王者', emoji:'🐉'},
+  {min:3000, name:'词汇传说', emoji:'👑'}
+];
+
+/* ---------- 成就 ---------- */
+var ACHIEVEMENTS = [
+  {id:'first', icon:'🌟', name:'初出茅庐', desc:'完成第一次学习', check:s=>s.totalLearned>=1},
+  {id:'w10', icon:'🎖️', name:'小有收获', desc:'学会10个单词', check:s=>s.masteredCount>=10},
+  {id:'w50', icon:'🏅', name:'勤奋学子', desc:'学会50个单词', check:s=>s.masteredCount>=50},
+  {id:'w100', icon:'🏆', name:'百词达人', desc:'学会100个单词', check:s=>s.masteredCount>=100},
+  {id:'w159', icon:'👑', name:'全书通关', desc:'学完全部单词', check:s=>s.masteredCount>=WORDS.length},
+  {id:'s3', icon:'🔥', name:'三日打卡', desc:'连续学习3天', check:s=>s.streak>=3},
+  {id:'s7', icon:'💎', name:'坚持一周', desc:'连续学习7天', check:s=>s.streak>=7},
+  {id:'s21', icon:'🌟', name:'习惯养成', desc:'连续学习21天', check:s=>s.streak>=21},
+  {id:'c10', icon:'⚡', name:'连击高手', desc:'获得10连击', check:s=>s.maxCombo>=10},
+  {id:'g500', icon:'💰', name:'小富翁', desc:'累计获得500金币', check:s=>s.totalGold>=500},
+  {id:'chal', icon:'🎯', name:'挑战勇士', desc:'完成一次每日挑战', check:s=>s.challengeDone>=1},
+  {id:'tree', icon:'🌳', name:'园丁', desc:'让花朵开花', check:s=>(s.scenes&&s.scenes.garden&&s.scenes.garden.exp>=500)||false},
+  {id:'pet', icon:'🐾', name:'铲屎官', desc:'宠物升到5级', check:s=>(s.scenes&&s.scenes.pet&&s.scenes.pet.level>=5)||false},
+  {id:'castle', icon:'🏰', name:'建筑师', desc:'建好一座城堡', check:s=>(s.scenes&&s.scenes.castle&&s.scenes.castle.stage>=6)||false},
+  {id:'space', icon:'🚀', name:'宇航员', desc:'发射火箭', check:s=>(s.scenes&&s.scenes.space&&s.scenes.space.stage>=6)||false}
+];
+
+/* ---------- 学习场景定义 ---------- */
+var SCENES = {
+  garden: {
+    name:'成长花园', icon:'🌱', desc:'浇水让花成长', color:'#34d399',
+    stages:[
+      {min:0, emoji:'🌱', name:'小种子', desc:'刚种下，需要水分～'},
+      {min:50, emoji:'🌿', name:'嫩芽', desc:'冒出小芽啦！'},
+      {min:150, emoji:'🪴', name:'幼苗', desc:'长出叶子了'},
+      {min:300, emoji:'🌳', name:'小树', desc:'越来越壮实'},
+      {min:500, emoji:'🌸', name:'花树', desc:'开花啦！好香～'},
+      {min:800, emoji:'🍎', name:'果树', desc:'结出果实，太棒了！'},
+      {min:1200, emoji:'🎄', name:'参天大树', desc:'长成参天大树！'}
+    ],
+    actionName:'浇水', actionCost:10, actionGain:20, actionIcon:'💧'
+  },
+  pet: {
+    name:'萌宠养成', icon:'🐱', desc:'喂食让宠物升级', color:'#ff6b9d',
+    stages:[
+      {min:0, emoji:'🥚', name:'蛋', desc:'一颗神秘的蛋'},
+      {min:60, emoji:'🐣', name:'破壳', desc:'小家伙破壳而出！'},
+      {min:180, emoji:'🐥', name:'小鸡', desc:'毛茸茸的小鸡'},
+      {min:360, emoji:'🐱', name:'小猫', desc:'变成一只可爱小猫'},
+      {min:600, emoji:'🐶', name:'小狗', desc:'活泼的小狗'},
+      {min:900, emoji:'🦁', name:'狮子王', desc:'威风凛凛！'},
+      {min:1300, emoji:'🐲', name:'神龙', desc:'进化成神龙啦！'}
+    ],
+    actionName:'喂食', actionCost:12, actionGain:25, actionIcon:'🍖'
+  },
+  castle: {
+    name:'城堡建造', icon:'🏰', desc:'添砖加瓦建城堡', color:'#7c5cff',
+    stages:[
+      {min:0, emoji:'🌾', name:'空地', desc:'一片空旷的土地'},
+      {min:80, emoji:'⛏️', name:'地基', desc:'挖好了地基'},
+      {min:240, emoji:'🧱', name:'墙壁', desc:'墙壁砌好了'},
+      {min:480, emoji:'🏠', name:'小屋', desc:'建好一座小屋'},
+      {min:800, emoji:'🏰', name:'城堡', desc:'宏伟的城堡建成！'},
+      {min:1200, emoji:'🏯', name:'王宫', desc:'升级成豪华王宫'},
+      {min:1700, emoji:'🏛️', name:'神殿', desc:'传说中的神殿！'}
+    ],
+    actionName:'建造', actionCost:15, actionGain:30, actionIcon:'🧱'
+  },
+  space: {
+    name:'太空探索', icon:'🚀', desc:'造火箭飞向太空', color:'#38bdf8',
+    stages:[
+      {min:0, emoji:'💡', name:'构想', desc:'一个伟大的构想'},
+      {min:100, emoji:'📐', name:'设计', desc:'画出设计图'},
+      {min:280, emoji:'🔧', name:'零件', desc:'制造火箭零件'},
+      {min:520, emoji:'🚀', name:'火箭', desc:'火箭组装完成！'},
+      {min:850, emoji:'🌍', name:'绕地飞行', desc:'环绕地球飞行'},
+      {min:1300, emoji:'🌙', name:'登月', desc:'成功登陆月球！'},
+      {min:1800, emoji:'🪐', name:'探索星球', desc:'飞向更远的星球'}
+    ],
+    actionName:'推进', actionCost:18, actionGain:35, actionIcon:'🔥'
+  }
+};
+
+/* ---------- 数据 ---------- */
+var S = null;
+function todayStr(){ const d=new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
+function loadState(){
+  try{ S = JSON.parse(localStorage.getItem(STORE_KEY)); }catch(e){ S=null; }
+  if(!S || !S.words) initFresh();
+  // 兼容旧数据，补齐 scenes
+  if(!S.scenes){ S.scenes={}; }
+  for(const k in SCENES){ if(!S.scenes[k]) S.scenes[k]={exp:0}; }
+}
+function initFresh(){
+  S = {
+    name:'同学', gold:0, totalGold:0, streak:0, lastStudyDate:null,
+    combo:0, maxCombo:0, totalLearned:0, totalReviews:0,
+    autoSpeak:true, dark:false, dailyCount:D.dailyNewWords,
+    challengeLeft:3, challengeDate:null, challengeBest:0, challengeDone:0,
+    scenes:{},
+    words:{}, achievements:{}, studyLog:{}
+  };
+  WORDS.forEach((w,i)=>{ S.words[w.word] = {unit:w.unit, status:'new', box:0, nextReview:null, wrong:0, right:0, idx:i}; });
+  for(const k in SCENES){ S.scenes[k]={exp:0}; }
+  saveState();
+}
+function saveState(){ localStorage.setItem(STORE_KEY, JSON.stringify(S)); }
+
+/* ---------- 工具 ---------- */
+function $(id){ return document.getElementById(id); }
+function shuffle(a){ a=a.slice(); for(let i=a.length-1;i>0;i--){let j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; }
+function toast(msg,ms=1800){ let t=document.createElement('div'); t.className='toast'; t.textContent=msg; document.body.appendChild(t); setTimeout(()=>t.remove(),ms); }
+function flyCoin(x,y){ let c=document.createElement('div'); c.className='coin-fly'; c.textContent='🪙'; c.style.left=x+'px'; c.style.top=y+'px'; document.body.appendChild(c); setTimeout(()=>c.remove(),1000); }
+function comboPop(n){ let c=document.createElement('div'); c.className='combo-pop'; c.textContent=n+' 连击!'; document.body.appendChild(c); setTimeout(()=>c.remove(),700); }
+function esc(s){ return String(s).replace(/'/g,"\\'").replace(/"/g,'&quot;'); }
+function getExtra(w){ return (window.WORDS_EXTRA && WORDS_EXTRA[w.word+'|'+w.unit]) || {example:'', memo:''}; }
+/* ---------- 语音朗读（兼容移动端） ----------
+   移动端三个坑：
+   1. voices 异步加载，需监听 voiceschanged 事件后才拿得到
+   2. 必须显式指定一个英文 voice，否则部分安卓用默认中文语音读不出英文
+   3. 首次必须在用户手势里"解锁"，否则浏览器会拦截自动发音
+*/
+var _voices = [];
+var _voicesReady = false;
+var _ttsUnlocked = false;  // 是否已通过用户手势解锁
+function loadVoices(){
+  if(!('speechSynthesis' in window)) return;
+  try{
+    _voices = speechSynthesis.getVoices() || [];
+    if(_voices.length > 0) _voicesReady = true;
+  }catch(e){}
+}
+if('speechSynthesis' in window){
+  loadVoices();
+  // voices 异步加载，监听事件
+  try{ speechSynthesis.onvoiceschanged = loadVoices; }catch(e){}
+  // 多次重试加载（某些安卓浏览器延迟很久）
+  var _voiceRetry = 0;
+  var _voiceTimer = setInterval(function(){
+    if(_voicesReady || _voiceRetry > 10){ clearInterval(_voiceTimer); return; }
+    loadVoices(); _voiceRetry++;
+  }, 300);
+}
+// 选一个合适的英文语音：优先 en-US，其次任意 en
+function pickEnglishVoice(){
+  if(!_voicesReady || _voices.length === 0) return null;
+  // 优先美国英文
+  var v = null;
+  for(var i=0;i<_voices.length;i++){
+    var lang = (_voices[i].lang||'').toLowerCase();
+    if(lang === 'en-us'){ v = _voices[i]; break; }
+  }
+  if(!v){
+    for(var i=0;i<_voices.length;i++){
+      var lang = (_voices[i].lang||'').toLowerCase();
+      if(lang.indexOf('en') === 0){ v = _voices[i]; break; }
+    }
+  }
+  return v;
+}
+// 在用户首次交互时解锁 TTS（移动端要求）
+function unlockTTS(){
+  if(_ttsUnlocked) return;
+  if(!('speechSynthesis' in window)) return;
+  try{
+    // 播放一段静音 utterance 来"唤醒"引擎
+    var u = new SpeechSynthesisUtterance(' ');
+    u.volume = 0; u.rate = 1;
+    speechSynthesis.speak(u);
+    _ttsUnlocked = true;
+  }catch(e){ _ttsUnlocked = true; }
+}
+function speak(text, opts){
+  opts = opts || {};
+  if(!('speechSynthesis' in window)){
+    toast('此浏览器不支持语音朗读'); return;
+  }
+  // 如果 voices 还没加载好，延迟重试
+  if(!_voicesReady){
+    var tries = 0;
+    var waitT = setInterval(function(){
+      loadVoices();
+      if(_voicesReady || tries > 8){
+        clearInterval(waitT);
+        speak(text, opts);
+      }
+      tries++;
+    }, 200);
+    return;
+  }
+  try{
+    speechSynthesis.cancel();
+    var u = new SpeechSynthesisUtterance(text);
+    u.lang = 'en-US';
+    u.rate = opts.rate || 0.85;
+    u.pitch = 1.05;
+    var v = pickEnglishVoice();
+    if(v) u.voice = v;
+    u.onerror = function(){ /* 静默，不报错 */ };
+    speechSynthesis.speak(u);
+  }catch(e){}
+}
+// 监听首次用户交互，解锁 TTS（必须在手势上下文中调用 speak 才能生效）
+(function(){
+  function onFirstInteraction(){ unlockTTS(); }
+  ['touchstart','click','keydown'].forEach(function(ev){
+    document.addEventListener(ev, onFirstInteraction, {once:true, passive:true});
+  });
+})();
+// 检测是否有英文语音引擎（仅提示一次）
+var _ttsWarned = false;
+function checkTTSAvailable(){
+  if(_ttsWarned) return;
+  if(!('speechSynthesis' in window)) return;
+  // 延迟检测，等 voices 加载
+  setTimeout(function(){
+    loadVoices();
+    if(_voices.length === 0) return; // 还没加载好，不警告
+    var hasEn = false;
+    for(var i=0;i<_voices.length;i++){
+      if((_voices[i].lang||'').toLowerCase().indexOf('en') === 0){ hasEn = true; break; }
+    }
+    if(!hasEn){
+      _ttsWarned = true;
+      showModal('🔊 语音提示', '<div style="font-size:40px">📢</div><p style="text-align:left;font-size:13px">你的手机暂未检测到英文语音引擎，单词可能无法朗读。\n\n<b>解决方法：</b>\n安卓：设置 → 语言和输入法 → 文字转语音输出 → 安装英文语音数据\n\n不影响其他学习功能，仅发音按钮会没声音。</p><button class="btn btn-primary" onclick="closeModal()">知道了</button>');
+    }
+  }, 600);
+}
+function getLevel(gold){ let lv=LEVELS[0],idx=0; for(let i=0;i<LEVELS.length;i++){ if(gold>=LEVELS[i].min){lv=LEVELS[i];idx=i;} }
+  const next=LEVELS[idx+1]; const prog=next?(gold-lv.min)/(next.min-lv.min):1; return {...lv,idx:idx+1,next,prog}; }
+function countMastered(){ let c=0; for(const k in S.words){ if(S.words[k].status==='mastered') c++; } return c; }
+function countLearned(){ let c=0; for(const k in S.words){ if(S.words[k].status!=='new') c++; } return c; }
+
+/* ---------- 遗忘曲线 ---------- */
+function scheduleReview(wordObj, correct){
+  const w=S.words[wordObj.word];
+  if(correct){
+    w.box=Math.min(w.box+1, D.reviewIntervals.length-1); w.right++;
+    if(w.box>=D.reviewIntervals.length-1){ w.status='mastered'; }
+    else w.status='review';
+  } else { w.box=0; w.wrong++; w.status='review'; }
+  const days=D.reviewIntervals[w.box]||1;
+  w.nextReview=new Date(Date.now()+days*86400000).toISOString().slice(0,10);
+}
+function getDueReviews(){
+  const t=todayStr(); let arr=[];
+  for(const k in S.words){ const w=S.words[k]; if(w.status==='review' && w.nextReview && w.nextReview<=t) arr.push(w.idx); }
+  return arr;
+}
+/* 今天还要学的新词：每轮 dailyCount 个，今天已学 rounds*dailyCount 个 */
+function getTodayNew(){
+  const t=todayStr(); const log=S.studyLog[t]||{new:0};
+  const todayNewDone=log.new||0;
+  const need=S.dailyCount; // 一次给一轮
+  if(need<=0) return [];
+  let res=[];
+  for(const idx of WORDS.map((w,i)=>i)){ if(S.words[WORDS[idx].word].status==='new'){ res.push(idx); if(res.length>=need) break; } }
+  return res;
+}
+function hasUnlearned(){ for(const k in S.words){ if(S.words[k].status==='new') return true; } return false; }
+
+/* ---------- 打卡 ---------- */
+function checkStreak(){
+  const t=todayStr();
+  if(S.lastStudyDate===t) return;
+  if(S.lastStudyDate){ const last=new Date(S.lastStudyDate),now=new Date(t); const diff=Math.round((now-last)/86400000);
+    if(diff===1) S.streak=(S.streak||0)+1; else if(diff>1) S.streak=1; }
+  else S.streak=1;
+  S.lastStudyDate=t;
+  if(S.challengeDate!==t){ S.challengeDate=t; S.challengeLeft=3; }
+}
+
+/* ---------- 金币 ---------- */
+function addGold(n,x,y){ S.gold+=n; if(n>0)S.totalGold+=n; if(x!==undefined&&y!==undefined&&n>0)flyCoin(x,y); updateNav(); saveState(); }
+
+/* ---------- 成就 ---------- */
+function checkAchievements(){
+  const stat={...S, masteredCount:countMastered(), totalLearned:countLearned(), scenes:S.scenes};
+  for(const a of ACHIEVEMENTS){
+    if(!S.achievements[a.id] && a.check(stat)){
+      S.achievements[a.id]=true; saveState();
+      setTimeout(()=>showModal('🎉 获得成就!','<div style="font-size:46px">'+a.icon+'</div><h3>'+a.name+'</h3><p>'+a.desc+'</p><button class="btn btn-primary" onclick="closeModal()">太棒了!</button>'),400);
+    }
+  }
+}
+
+/* ---------- 导航 ---------- */
+var NAV_PAGES=['home','learn','scene','challenge','wrongbook','calendar','stats','settings'];
+function nav(page){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  const el=$('page-'+page); if(el) el.classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  const navMap={home:'home',wrongbook:'wrongbook',challenge:'challenge',stats:'stats'};
+  if(navMap[page]){ var navEl=document.querySelector('.nav-item[data-nav="'+navMap[page]+'"]'); if(navEl) navEl.classList.add('active'); }
+  window.scrollTo(0,0);
+  if(page==='home') renderHome();
+  if(page==='wrongbook') renderWrong();
+  if(page==='challenge') renderChallenge();
+  if(page==='stats') renderStats();
+  if(page==='calendar') renderCalendar();
+  if(page==='settings') renderSettings();
+  if(page==='scene') renderScene();
+}
+
+/* ---------- 首页 ---------- */
+function renderHome(){
+  checkStreak(); saveState();
+  const lv=getLevel(S.totalGold);
+  $('homeName').textContent=S.name;
+  $('homeStreak').textContent=S.streak; $('navStreak').textContent=S.streak;
+  $('heroEmoji').textContent=lv.emoji;
+  $('homeLevel').textContent=lv.idx;
+  const learned=countLearned();
+  $('homeLearned').textContent=learned;
+  const reviews=getDueReviews();
+  $('homeReview').textContent=reviews.length;
+  $('reviewCount').textContent=reviews.length;
+  $('reviewBtn').style.display=reviews.length>0?'':'none';
+  // 继续学新词按钮：只要还有未学的就显示
+  $('moreBtn').style.display=hasUnlearned()?'':'none';
+  const pct=Math.round(learned/WORDS.length*100);
+  $('ringPct').textContent=pct+'%';
+  $('ringCircle').style.strokeDashoffset=295*(1-pct/100);
+  $('totalWords').textContent=WORDS.length;
+  $('masteredWords').textContent=countMastered();
+  $('reviewingWords').textContent=Object.values(S.words).filter(w=>w.status==='review').length;
+  $('remainWords').textContent=WORDS.length-learned;
+  $('homeLevelBar').style.width=(lv.prog*100)+'%';
+  $('homeTip').textContent = reviews.length>0 ? '有'+reviews.length+'个单词该复习啦！' :
+    (learned>=WORDS.length ? '全书学完啦！继续复习巩固～' : '今天学'+S.dailyCount+'个新单词，冲鸭!');
+  // 场景卡片
+  $('sceneGrid').innerHTML = Object.entries(SCENES).map(([k,sc])=>{
+    const st=S.scenes[k]; const stage=sc.stages.filter(s=>st.exp>=s.min).pop();
+    const next=sc.stages.find(s=>s.min>st.exp);
+    const prog=next?Math.round((st.exp-stage.min)/(next.min-stage.min)*100):100;
+    return `<div class="mini-card" data-scene="${k}">
+      <div class="ico">${stage.emoji}</div>
+      <div class="t">${sc.name}</div>
+      <div class="d">${stage.name} ${next?(prog+'%'):'满级'}</div>
+    </div>`;
+  }).join('');
+  $('sceneGrid').querySelectorAll('[data-scene]').forEach(el=>{ el.onclick=()=>openScene(el.dataset.scene); });
+  updateNav();
+}
+function updateNav(){ $('navGold').textContent=S.gold; $('navStreak').textContent=S.streak; }
+
+/* ============================================================
+   学习流程
+   每天可多轮：每次学 dailyCount 个新词，学完可继续
+   ============================================================ */
+var learnSession=null;
+function startLearn(mode){
+  let queue;
+  if(mode==='review') queue=getDueReviews();
+  else queue=getTodayNew();
+  if(queue.length===0){
+    toast(mode==='review'?'没有需要复习的单词啦~':(hasUnlearned()?'暂时没有更多新词':'全部单词学完啦!'));
+    return;
+  }
+  learnSession={mode,queue,cur:0,results:[],correct:0};
+  nav('learn'); renderLearn();
+}
+function renderLearn(){
+  const sess=learnSession; if(!sess){nav('home');return;}
+  if(sess.cur>=sess.queue.length){ showLearnDone(); return; }
+  const w=WORDS[sess.queue[sess.cur]];
+  $('learnProgress').style.width=((sess.cur)/sess.queue.length*100)+'%';
+  $('learnLabel').textContent=(sess.cur+1)+'/'+sess.queue.length;
+  showFlashcard(w);
+}
+function showFlashcard(w){
+  const isPhrase=w.phrase||w.word.indexOf(' ')>=0;
+  const ex=getExtra(w);
+  const sess=learnSession;
+  const modeLabel=sess.mode==='review'?'🔄 复习':'🆕 新词';
+  $('learnContent').innerHTML=`
+    <div class="card-box">
+      <div class="word-unit-tag">${UNIT_TITLES[w.unit]}</div>
+      <div class="word-mode-tag ${sess.mode==='review'?'review':'new'}">${modeLabel}</div>
+      <div class="word-en ${isPhrase?'phrase':''}">${w.word}</div>
+      <div class="word-phon">${w.phonetic}</div>
+      <div class="word-pos">${w.pos}</div>
+      <div class="word-cn">${w.meaning}</div>
+      ${ex.example?`<div class="word-example"><b>📝 例句：</b>${ex.example.replace(/ /,'</b> ')}<span class="cn">${ex.example.split(' ').slice(1).join(' ')}</span></div>`:''}
+      ${ex.memo?`<div class="word-memo"><span class="memo-label">💡 记忆：</span>${ex.memo}</div>`:''}
+      <button class="speak-btn" onclick="speak('${esc(w.word)}')">🔊</button>
+      <div class="actions">
+        <button class="btn btn-ghost" id="fcAgain">再看一遍</button>
+        <button class="btn btn-next" id="fcNext">开始测验 →</button>
+      </div>
+    </div>`;
+  if(S.autoSpeak) speak(w.word);
+  $('fcNext').onclick=()=>startQuiz(w);
+  $('fcAgain').onclick=()=>{ if(S.autoSpeak)speak(w.word); toast('再看一遍，加深印象～',1000); };
+}
+function startQuiz(w){
+  const isPhrase=w.phrase||w.word.indexOf(' ')>=0;
+  const types=isPhrase?['cn2en','en2cn']:['cn2en','en2cn','spell','listen'];
+  const t=types[Math.floor(Math.random()*types.length)];
+  if(t==='cn2en') quizCn2En(w);
+  else if(t==='en2cn') quizEn2Cn(w);
+  else if(t==='listen') quizListen(w);
+  else quizSpell(w);
+}
+function quizCn2En(w){
+  const dis=shuffle(WORDS.filter(x=>x.word!==w.word)).slice(0,3);
+  const opts=shuffle([w,...dis]);
+  $('learnContent').innerHTML=`
+    <div class="card-box">
+      <div class="quiz-prompt">选出对应的英文单词 👇</div>
+      <div class="quiz-q">${w.meaning}</div>
+      <div class="word-pos" style="margin-bottom:12px">${w.pos}</div>
+      <div class="options" id="optList">${opts.map(o=>`<button class="opt" data-w="${esc(o.word)}">${o.word}</button>`).join('')}</div>
+      <div id="fb"></div>
+    </div>`;
+  $('optList').querySelectorAll('.opt').forEach(b=>{ b.onclick=()=>handleAnswer(w,b.dataset.w===w.word,b,$('optList').querySelectorAll('.opt'),w.word); });
+}
+function quizEn2Cn(w){
+  const dis=shuffle(WORDS.filter(x=>x.word!==w.word)).slice(0,3);
+  const opts=shuffle([w,...dis]);
+  $('learnContent').innerHTML=`
+    <div class="card-box">
+      <div class="quiz-prompt">选出正确的中文释义 👇</div>
+      <div class="quiz-q small">${w.word} <span class="word-phon" style="font-size:13px">${w.phonetic}</span></div>
+      <button class="speak-btn" onclick="speak('${esc(w.word)}')">🔊 听发音</button>
+      <div class="options" id="optList" style="margin-top:6px">${opts.map(o=>`<button class="opt" data-m="${esc(o.meaning)}">${o.meaning}</button>`).join('')}</div>
+      <div id="fb"></div>
+    </div>`;
+  if(S.autoSpeak) setTimeout(()=>speak(w.word),300);
+  $('optList').querySelectorAll('.opt').forEach(b=>{ b.onclick=()=>handleAnswer(w,b.dataset.m===w.meaning,b,$('optList').querySelectorAll('.opt'),w.meaning); });
+}
+function quizListen(w){
+  const dis=shuffle(WORDS.filter(x=>x.word!==w.word)).slice(0,3);
+  const opts=shuffle([w,...dis]);
+  $('learnContent').innerHTML=`
+    <div class="card-box">
+      <div class="quiz-prompt">🎧 听发音，选出对应的英文单词</div>
+      <button class="speak-btn" style="width:64px;height:64px;font-size:28px" onclick="speak('${esc(w.word)}')">🔊</button>
+      <div style="color:var(--muted);font-size:12px">点喇叭再听一次</div>
+      <div class="options" id="optList">${opts.map(o=>`<button class="opt" data-w="${esc(o.word)}">${o.word}</button>`).join('')}</div>
+      <div id="fb"></div>
+    </div>`;
+  speak(w.word,{rate:0.8});
+  $('optList').querySelectorAll('.opt').forEach(b=>{ b.onclick=()=>handleAnswer(w,b.dataset.w===w.word,b,$('optList').querySelectorAll('.opt'),w.word); });
+}
+function quizSpell(w){
+  const first=w.word.charAt(0); const len=w.word.length;
+  $('learnContent').innerHTML=`
+    <div class="card-box">
+      <div class="quiz-prompt">根据中文拼写出英文 ✍️</div>
+      <div class="quiz-q">${w.meaning}</div>
+      <div class="word-pos" style="margin-bottom:4px">${w.pos} · ${w.phonetic}</div>
+      <div style="color:var(--muted);font-size:12px;margin-bottom:10px">提示：以 <b style="color:var(--primary)">${first}</b> 开头，共 ${len} 个字符</div>
+      <input class="spell-input" id="spellIn" placeholder="输入英文..." autocomplete="off" autocapitalize="off" spellcheck="false" inputmode="latin" enterkeyhint="done">
+      <div class="actions"><button class="btn btn-warn" id="skipBtn">跳过</button><button class="btn btn-primary" id="submitBtn">确认</button></div>
+      <div id="fb"></div>
+    </div>`;
+  const inp=$('spellIn'); inp.focus();
+  inp.onkeydown=e=>{ if(e.key==='Enter') doSubmit(); };
+  $('submitBtn').onclick=doSubmit;
+  $('skipBtn').onclick=()=>handleAnswer(w,false,null,null,w.word,true);
+  function doSubmit(){ const val=inp.value.trim().toLowerCase(); handleAnswer(w,val===w.word.toLowerCase(),inp,null,w.word); }
+}
+function handleAnswer(w,correct,btnEl,allOpts,answer,skipped){
+  if(allOpts) allOpts.forEach(b=>b.disabled=true);
+  if(btnEl&&allOpts){ if(correct)btnEl.classList.add('correct'); else{btnEl.classList.add('wrong'); allOpts.forEach(b=>{if(b.dataset.w===answer||b.dataset.m===answer)b.classList.add('correct');}); } }
+  const fb=$('fb'); const ex=getExtra(w);
+  if(correct){
+    S.combo=(S.combo||0)+1; if(S.combo>S.maxCombo)S.maxCombo=S.combo;
+    const bonus=Math.floor((S.combo-1)/3)*D.comboBonus;
+    const total=D.correctGold+bonus; addGold(total);
+    if(S.combo>=3&&S.combo%3===0) comboPop(S.combo);
+    fb.innerHTML='<div class="feedback ok">✅ 答对了！+🪙'+total+(bonus?' (含连击'+bonus+')':'')+'</div>';
+    sess_result(w,true);
+    if(learnSession.mode==='new'){
+      const t=todayStr(); if(!S.studyLog[t])S.studyLog[t]={}; S.studyLog[t].new=(S.studyLog[t].new||0)+1;
+      if(S.words[w.word].status==='new'){ S.words[w.word].status='review'; S.totalLearned++; }
+    } else { S.totalReviews++; }
+    scheduleReview(w,true); saveState();
+    nextBtn('下一题 →');
+  } else {
+    S.combo=0;
+    sess_result(w,false);
+    if(learnSession.mode==='new'){
+      if(S.words[w.word].status==='new'){ S.words[w.word].status='review'; S.totalLearned++;
+        const t=todayStr(); if(!S.studyLog[t])S.studyLog[t]={}; S.studyLog[t].new=(S.studyLog[t].new||0)+1; }
+    }
+    fb.innerHTML=`<div class="feedback no">❌ ${skipped?'已跳过':'答错啦'}。正确：<b>${answer}</b> = ${w.meaning}</div>${ex.memo?`<div class="word-memo" style="margin-top:8px"><span class="memo-label">💡 记忆：</span>${ex.memo}</div>`:''}`;
+    scheduleReview(w,false); saveState();
+    nextBtn('继续 →');
+  }
+  checkAchievements();
+}
+function nextBtn(label){
+  const fb=$('fb'); const d=document.createElement('div'); d.className='actions'; d.style.marginTop='8px';
+  d.innerHTML='<button class="btn btn-next" id="nxt">'+label+'</button>'; fb.appendChild(d);
+  $('nxt').onclick=()=>{ learnSession.cur++; renderLearn(); };
+}
+function showLearnDone(){
+  const sess=learnSession; const correct=sess.correct, total=sess.results.length;
+  const acc=total?Math.round(correct/total*100):0;
+  let emoji='🎉',title='完成啦!';
+  if(acc===100){emoji='🏆';title='全部答对！太厉害了!';}
+  else if(acc>=80){emoji='🌟';title='表现很棒!';}
+  else if(acc>=60){emoji='👍';title='不错，继续加油!';}
+  else{emoji='💪';title='多复习就会记住的!';}
+  let bonus=0;
+  if(sess.mode==='new'&&correct===total){bonus=D.dailyGoalGold;addGold(bonus);}
+  if(sess.mode==='review'&&correct===total){bonus=10;addGold(bonus);}
+  checkStreak(); saveState(); checkAchievements();
+  $('learnProgress').style.width='100%'; $('learnLabel').textContent=total+'/'+total;
+  const canMore = sess.mode==='new' && hasUnlearned();
+  $('learnContent').innerHTML=`
+    <div class="card-box">
+      <div class="done-emoji">${emoji}</div>
+      <div class="done-title">${title}</div>
+      <div style="color:var(--muted);font-size:13px;margin:4px 0">${sess.mode==='review'?'本次复习':'本轮新词'}已完成</div>
+      <div class="done-stats">
+        <div class="done-stat"><div class="n">${correct}</div><div class="l">答对</div></div>
+        <div class="done-stat"><div class="n">${total-correct}</div><div class="l">答错</div></div>
+        <div class="done-stat"><div class="n">${acc}%</div><div class="l">正确率</div></div>
+      </div>
+      ${bonus?`<div style="color:#d4a017;font-weight:800">🪙 +${bonus} 金币奖励!</div>`:''}
+      <div class="actions" style="margin-top:8px">
+        ${canMore?'<button class="btn btn-next" id="doneMore">➕ 再学一轮</button>':''}
+        <button class="btn btn-primary" id="doneHome">返回首页</button>
+      </div>
+    </div>`;
+  if($('doneMore')) $('doneMore').onclick=()=>{ learnSession=null; startLearn('new'); };
+  $('doneHome').onclick=()=>{ learnSession=null; nav('home'); };
+}
+function sess_result(w,ok){ learnSession.results.push({word:w.word,ok}); if(ok)learnSession.correct++; }
+</script>
+<script>
+/* ============================================================
+   场景系统
+   ============================================================ */
+var currentScene=null;
+function openScene(key){
+  currentScene=key; nav('scene');
+}
+function renderScene(){
+  if(!currentScene){ nav('home'); return; }
+  const sc=SCENES[currentScene]; const st=S.scenes[currentScene];
+  const stage=sc.stages.filter(s=>st.exp>=s.min).pop();
+  const next=sc.stages.find(s=>s.min>st.exp);
+  const prog=next?Math.round((st.exp-stage.min)/(next.min-stage.min)*100):100;
+  $('sceneTitle').textContent=sc.icon+' '+sc.name;
+  $('sceneContent').innerHTML=`
+    <div class="card-box" style="min-height:auto">
+      <div class="scene-stage" id="sceneStage">${stage.emoji}</div>
+      <div class="scene-name">${stage.name}</div>
+      <div class="scene-desc">${stage.desc}</div>
+      <div class="exp-bar-wrap">
+        <div class="exp-bar-label"><span>成长值 ${st.exp}</span><span>${next?('下一个: '+next.name):'已满级'}</span></div>
+        <div class="exp-bar"><div style="width:${prog}%;background:${sc.color}"></div></div>
+      </div>
+      <button class="big-btn green" id="sceneAction" style="max-width:280px;margin-top:6px">
+        ${sc.actionIcon} ${sc.actionName} (花费${sc.actionCost}🪙)
+      </button>
+      <div style="font-size:12px;color:var(--muted);margin-top:6px">每次${sc.actionName}+${sc.actionGain}成长值</div>
+    </div>
+    <div class="section-title"><span>📜 成长历程</span></div>
+    ${sc.stages.map(s=>{
+      const got=st.exp>=s.min;
+      return `<div class="list-card">
+        <div class="badge ${got?'':'locked'}">${s.emoji}</div>
+        <div><div class="lt">${s.name}</div><div class="ld">${s.desc}</div></div>
+        <div class="lr" style="color:${got?'var(--green)':'var(--muted)'}">${got?'✅':(s.min+'值')}</div>
+      </div>`;
+    }).join('')}
+  `;
+  const btn=$('sceneAction');
+  const refreshBtn=()=>{ btn.disabled=S.gold<sc.actionCost; btn.style.opacity=S.gold<sc.actionCost?0.5:1; };
+  refreshBtn();
+  btn.onclick=()=>{
+    if(S.gold<sc.actionCost){ toast('金币不足!需要'+sc.actionCost+'🪙'); return; }
+    S.gold-=sc.actionCost; st.exp+=sc.actionGain;
+    const prevStage=sc.stages.filter(x=>st.exp-sc.actionGain<x.min).pop();
+    const nowStage=sc.stages.filter(x=>st.exp>=x.min).pop();
+    saveState(); updateNav();
+    if(prevStage.emoji!==nowStage.emoji){
+      $('sceneStage').textContent=nowStage.emoji;
+      toast('🎉 '+nowStage.name+' '+nowStage.emoji+' 升级啦!');
+    } else { toast(sc.actionIcon+' '+sc.actionName+'成功! +'+sc.actionGain+'成长值'); }
+    const r=btn.getBoundingClientRect();
+    for(let i=0;i<3;i++) setTimeout(()=>{const d=document.createElement('div');d.className='coin-fly';d.textContent=sc.actionIcon;d.style.left=(r.left+30+i*15)+'px';d.style.top=r.top+'px';document.body.appendChild(d);setTimeout(()=>d.remove(),1000);},i*100);
+    renderScene(); checkAchievements();
+  };
+}
+
+/* ============================================================
+   每日挑战
+   ============================================================ */
+var challenge=null;
+function renderChallenge(){
+  const t=todayStr();
+  if(S.challengeDate!==t){ S.challengeDate=t; S.challengeLeft=3; saveState(); }
+  $('challengeArea').innerHTML=`
+    <div class="card-box" style="min-height:auto">
+      <div style="font-size:48px">⏱️</div>
+      <div style="font-size:18px;font-weight:800">60秒单词大挑战</div>
+      <div style="color:var(--muted);font-size:13px;text-align:center;max-width:300px">看中文释义，快速选出正确的英文单词。答得越多金币越多！</div>
+      <div style="font-size:13px;color:var(--muted)">今日剩余 <b style="color:var(--primary)">${S.challengeLeft}</b> 次 · 历史最高 <b style="color:var(--accent)">${S.challengeBest}</b></div>
+      <button class="big-btn" style="max-width:260px" id="chalStart" ${S.challengeLeft<=0?'disabled style="opacity:.5"':''}>${S.challengeLeft>0?'开始挑战 🚀':'今天次数用完啦'}</button>
+    </div>`;
+  if(S.challengeLeft>0) $('chalStart').onclick=startChallenge;
+}
+function startChallenge(){
+  if(S.challengeLeft<=0){ toast('今天挑战次数用完啦!'); return; }
+  const pool=WORDS.filter(w=>S.words[w.word].status!=='new');
+  if(pool.length<4){ toast('先学一些单词再来挑战!'); return; }
+  S.challengeLeft--; saveState();
+  challenge={score:0,correct:0,startTime:Date.now()};
+  $('challengeArea').innerHTML=`
+    <div class="progress-top"><div class="back" data-nav="home">←</div>
+      <div style="flex:1;text-align:center;font-weight:800;font-size:18px;color:var(--red)" id="chalTime">⏱️ 60s</div>
+      <div style="font-weight:800;font-size:18px;color:var(--accent)">🪙 <span id="chalScore">0</span></div>
+    </div><div id="chalBody"></div>`;
+  challenge.timer=setInterval(()=>{
+    const left=60-Math.floor((Date.now()-challenge.startTime)/1000);
+    if(left<=0){ endChallenge(); return; }
+    $('chalTime').textContent='⏱️ '+left+'s';
+  },250);
+  nextChallengeQ();
+}
+function nextChallengeQ(){
+  const pool=WORDS.filter(w=>S.words[w.word].status!=='new');
+  const w=pool[Math.floor(Math.random()*pool.length)];
+  const dis=shuffle(pool.filter(x=>x.word!==w.word)).slice(0,3);
+  const opts=shuffle([w,...dis]);
+  $('chalBody').innerHTML=`
+    <div class="card-box" style="min-height:240px">
+      <div class="quiz-prompt">快速选出英文单词!</div>
+      <div class="quiz-q">${w.meaning}</div>
+      <div class="word-pos" style="margin-bottom:10px">${w.pos}</div>
+      <div class="options" id="chalOpts">${opts.map(o=>`<button class="opt" data-w="${esc(o.word)}">${o.word}</button>`).join('')}</div>
+    </div>`;
+  $('chalOpts').querySelectorAll('.opt').forEach(b=>{
+    b.onclick=()=>{
+      if(b.dataset.w===w.word){
+        b.classList.add('correct'); challenge.score+=5; challenge.correct++;
+        S.combo++; if(S.combo>S.maxCombo)S.maxCombo=S.combo;
+        $('chalScore').textContent=challenge.score;
+        setTimeout(nextChallengeQ,300);
+      } else {
+        b.classList.add('wrong');
+        $('chalOpts').querySelectorAll('.opt').forEach(x=>{if(x.dataset.w===w.word)x.classList.add('correct');});
+        challenge.score=Math.max(0,challenge.score-2); S.combo=0;
+        $('chalScore').textContent=challenge.score;
+        setTimeout(nextChallengeQ,750);
+      }
+    };
+  });
+}
+function endChallenge(){
+  clearInterval(challenge.timer);
+  const score=challenge.score, correct=challenge.correct;
+  addGold(score);
+  if(score>S.challengeBest) S.challengeBest=score;
+  S.challengeDone=(S.challengeDone||0)+1;
+  saveState(); checkAchievements(); challenge=null;
+  $('challengeArea').innerHTML=`
+    <div class="card-box">
+      <div class="done-emoji">${score>=80?'🏆':'🌟'}</div>
+      <div class="done-title">挑战结束!</div>
+      <div class="done-stats">
+        <div class="done-stat"><div class="n">${score}</div><div class="l">金币</div></div>
+        <div class="done-stat"><div class="n">${correct}</div><div class="l">答对题数</div></div>
+        <div class="done-stat"><div class="n">${S.challengeBest}</div><div class="l">历史最高</div></div>
+      </div>
+      <div style="color:#d4a017;font-weight:800">🪙 +${score} 金币已入账!</div>
+      <div class="actions" style="margin-top:8px">
+        ${S.challengeLeft>0?'<button class="btn btn-warn" id="chalAgain">再来一次</button>':''}
+        <button class="btn btn-primary" onclick="nav('home')">返回首页</button>
+      </div>
+    </div>`;
+  if($('chalAgain')) $('chalAgain').onclick=startChallenge;
+}
+
+/* ============================================================
+   错词本
+   ============================================================ */
+function renderWrong(){
+  const wrong=WORDS.filter(w=>S.words[w.word]&&S.words[w.word].wrong>0).sort((a,b)=>S.words[b.word].wrong-S.words[a.word].wrong);
+  if(wrong.length===0){
+    $('wrongList').innerHTML='<div class="card-box" style="min-height:200px"><div style="font-size:48px">✨</div><div style="font-size:18px;font-weight:800">还没有错词哦!</div><div style="color:var(--muted)">继续保持～</div></div>';
+    return;
+  }
+  $('wrongList').innerHTML='<div style="margin-bottom:10px"><button class="big-btn" style="font-size:15px;padding:12px" id="practiceWrong">🎯 重新练习全部错词 ('+wrong.length+')</button></div>'+
+    wrong.map(w=>{ const st=S.words[w.word]; return `<div class="list-card">
+      <div class="badge sm" style="background:#fff0f0">${st.wrong>=3?'🔥':st.wrong>=2?'⚠️':'📝'}</div>
+      <div style="flex:1"><div class="lt">${w.word} <span class="word-pos" style="font-size:11px">${w.pos}</span></div><div class="ld">${w.meaning} · 错${st.wrong}次</div></div>
+      <button class="lr" style="background:#f0ecff;padding:7px 11px;border-radius:20px" onclick="speak('${esc(w.word)}')">🔊</button>
+    </div>`; }).join('');
+  $('practiceWrong').onclick=()=>{
+    const q=wrong.map(w=>S.words[w.word].idx);
+    learnSession={mode:'review',queue:q,cur:0,results:[],correct:0}; nav('learn'); renderLearn();
+  };
+}
+
+/* ============================================================
+   学习日历
+   ============================================================ */
+function renderCalendar(){
+  const t=todayStr();
+  const due=getDueReviews();
+  // 本月日历
+  const now=new Date(); const y=now.getFullYear(), m=now.getMonth();
+  const first=new Date(y,m,1); const startDay=first.getDay();
+  const days=new Date(y,m+1,0).getDate();
+  let html='<div class="card-box" style="min-height:auto;text-align:left">';
+  html+='<div style="font-weight:800;font-size:16px;text-align:center;margin-bottom:8px">'+y+'年'+(m+1)+'月</div>';
+  html+='<div class="cal-grid">';
+  ['日','一','二','三','四','五','六'].forEach(d=>html+='<div class="cal-head">'+d+'</div>');
+  for(let i=0;i<startDay;i++) html+='<div class="cal-cell"></div>';
+  for(let d=1;d<=days;d++){
+    const ds=y+'-'+String(m+1).padStart(2,'0')+'-'+String(d).padStart(2,'0');
+    const log=S.studyLog[ds]; const cnt=log?((log.new||0)+(log.review||0)):0;
+    let cls=''; if(cnt>=12)cls='l3'; else if(cnt>=7)cls='l2'; else if(cnt>0)cls='has';
+    const today=ds===t?'today':'';
+    html+=`<div class="cal-cell ${cls} ${today}" title="${ds}: ${cnt}个">${cnt>0?cnt:d}</div>`;
+  }
+  html+='</div></div>';
+  // 近期复习计划
+  html+='<div class="section-title"><span>📌 近期复习计划</span></div>';
+  const future={};
+  for(const k in S.words){ const w=S.words[k]; if(w.status==='review'&&w.nextReview){ future[w.nextReview]=(future[w.nextReview]||0)+1; } }
+  const dates=Object.keys(future).sort();
+  if(dates.length===0){
+    html+='<div class="card-box" style="min-height:auto"><div style="color:var(--muted)">暂无待复习单词 🎉</div></div>';
+  } else {
+    html+='<div class="card-box" style="min-height:auto;text-align:left">';
+    dates.slice(0,10).forEach(ds=>{
+      const dt=new Date(ds); const label=ds===t?'今天':(ds===new Date(Date.now()+86400000).toISOString().slice(0,10)?'明天':(dt.getMonth()+1)+'/'+dt.getDate());
+      html+=`<div class="setting-row"><div class="lbl">${label} ${ds===t?'🔄':''}</div><div style="color:var(--primary);font-weight:700">${future[ds]} 个单词</div></div>`;
+    });
+    html+='</div>';
+  }
+  // 今日学习情况
+  const todayLog=S.studyLog[t]||{};
+  html+='<div class="section-title"><span>📋 今日情况</span></div>';
+  html+=`<div class="card-box" style="min-height:auto;text-align:left">
+    <div class="setting-row"><div class="lbl">🆕 今天新学</div><div style="font-weight:700;color:var(--primary)">${todayLog.new||0} 个</div></div>
+    <div class="setting-row"><div class="lbl">🔄 待复习</div><div style="font-weight:700;color:var(--accent)">${due.length} 个</div></div>
+    <div class="setting-row"><div class="lbl">🔥 连续打卡</div><div style="font-weight:700;color:var(--pink)">${S.streak} 天</div></div>
+  </div>`;
+  $('calendarArea').innerHTML=html;
+}
+
+/* ============================================================
+   统计
+   ============================================================ */
+function renderStats(){
+  let html='';
+  for(let i=48;i>=0;i--){ const d=new Date(); d.setDate(d.getDate()-i); const ds=d.toISOString().slice(0,10);
+    const cnt=S.studyLog[ds]?((S.studyLog[ds].new||0)+(S.studyLog[ds].review||0)):0;
+    let lv=''; if(cnt>=12)lv='l4'; else if(cnt>=7)lv='l3'; else if(cnt>=3)lv='l2'; else if(cnt>=1)lv='l1';
+    html+=`<div class="heat-cell ${lv}" title="${ds}: ${cnt}个">${cnt||''}</div>`;
+  }
+  $('heatmap').innerHTML=html;
+  // 成就
+  const stat={...S,masteredCount:countMastered(),totalLearned:countLearned(),scenes:S.scenes};
+  let got=0;
+  $('achievementWall').innerHTML=ACHIEVEMENTS.map(a=>{ const g=S.achievements[a.id]; if(g)got++; return `<div class="list-card">
+    <div class="badge ${g?'':'locked'}">${a.icon}</div>
+    <div style="flex:1"><div class="lt">${a.name}</div><div class="ld">${a.desc}</div></div>
+    <div class="lr" style="color:${g?'var(--green)':'var(--muted)'}">${g?'✅':'🔒'}</div></div>`; }).join('');
+  $('achCount').textContent=got+'/'+ACHIEVEMENTS.length;
+  // 详细数据
+  const lv=getLevel(S.totalGold);
+  $('detailStats').innerHTML=`
+    <div class="setting-row"><div class="lbl">当前等级</div><div style="font-weight:700">${lv.emoji} Lv.${lv.idx} ${lv.name}</div></div>
+    <div class="setting-row"><div class="lbl">累计金币</div><div style="font-weight:700;color:#d4a017">🪙 ${S.totalGold}</div></div>
+    <div class="setting-row"><div class="lbl">当前金币</div><div style="font-weight:700;color:#d4a017">🪙 ${S.gold}</div></div>
+    <div class="setting-row"><div class="lbl">已学单词</div><div style="font-weight:700;color:var(--primary)">${countLearned()} / ${WORDS.length}</div></div>
+    <div class="setting-row"><div class="lbl">已掌握</div><div style="font-weight:700;color:var(--green)">${countMastered()}</div></div>
+    <div class="setting-row"><div class="lbl">累计复习次数</div><div style="font-weight:700">${S.totalReviews||0}</div></div>
+    <div class="setting-row"><div class="lbl">最高连击</div><div style="font-weight:700;color:var(--accent)">⚡ ${S.maxCombo}</div></div>
+    <div class="setting-row"><div class="lbl">连续打卡</div><div style="font-weight:700;color:var(--pink)">🔥 ${S.streak} 天</div></div>
+    <div class="setting-row"><div class="lbl">挑战最高分</div><div style="font-weight:700">🎯 ${S.challengeBest}</div></div>
+  `;
+}
+
+/* ============================================================
+   设置
+   ============================================================ */
+function renderSettings(){
+  $('setName').value=S.name;
+  $('setAutoSpeak').classList.toggle('on',S.autoSpeak);
+  $('setDark').classList.toggle('on',S.dark);
+  $('setDaily').value=S.dailyCount;
+}
+function bindEl(id,evt,fn){ var el=$(id); if(el) el.addEventListener(evt,fn); }
+bindEl('setAutoSpeak','click',function(){ S.autoSpeak=!S.autoSpeak; this.classList.toggle('on',S.autoSpeak); saveState(); });
+bindEl('setDark','click',function(){ S.dark=!S.dark; this.classList.toggle('on',S.dark); applyTheme(); saveState(); });
+bindEl('setName','change',function(){ S.name=this.value||'同学'; saveState(); updateNav(); });
+bindEl('setDaily','change',function(){ S.dailyCount=parseInt(this.value); saveState(); });
+bindEl('resetBtn','click',function(){
+  showConfirm('确定重置吗？','所有学习进度、金币、成就都会清空，无法恢复!',()=>{ localStorage.removeItem(STORE_KEY); initFresh(); applyTheme(); nav('home'); toast('已重置，重新开始!'); });
+});
+bindEl('exportBtn','click',function(){
+  const data=JSON.stringify(S,null,2);
+  const blob=new Blob([data],{type:'application/json'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a'); a.href=url; a.download='单词大冒险_备份_'+todayStr()+'.json'; a.click();
+  URL.revokeObjectURL(url); toast('已导出备份文件!');
+});
+bindEl('importBtn','click',function(){ $('importFile').click(); });
+bindEl('importFile','change',function(e){
+  const file=e.target.files[0]; if(!file)return;
+  const reader=new FileReader();
+  reader.onload=()=>{
+    try{ const data=JSON.parse(reader.result);
+      if(!data.words) throw new Error('格式不对');
+      S=data; if(!S.scenes){S.scenes={};} for(const k in SCENES){if(!S.scenes[k])S.scenes[k]={exp:0};}
+      saveState(); applyTheme(); nav('home'); toast('数据导入成功!');
+    }catch(err){ toast('导入失败：文件格式不对'); }
+  };
+  reader.readAsText(file);
+});
+
+/* ---------- 主题 ---------- */
+function applyTheme(){
+  document.documentElement.classList.toggle('dark',S.dark);
+  $('themeBtn').textContent=S.dark?'☀️':'🌙';
+}
+
+/* ---------- 弹窗 ---------- */
+function showModal(title,html){ $('modalBox').innerHTML='<h3>'+title+'</h3>'+html; $('modalMask').classList.add('show'); }
+function closeModal(){ $('modalMask').classList.remove('show'); }
+function showConfirm(title,msg,onYes){
+  $('modalBox').innerHTML=`<h3>${title}</h3><p>${msg}</p><div class="actions" style="margin-top:8px"><button class="btn btn-ghost" onclick="closeModal()">取消</button><button class="btn" style="background:var(--red);color:#fff" id="cfYes">确定</button></div>`;
+  $('modalMask').classList.add('show'); $('cfYes').onclick=()=>{closeModal();onYes();};
+}
+$('modalMask').onclick=e=>{ if(e.target===$('modalMask')) closeModal(); };
+
+/* ---------- 事件 ---------- */
+function bindHomeStart(){
+  $('startBtn').onclick=()=>{
+    // 在用户手势里解锁并检测语音引擎
+    unlockTTS();
+    checkTTSAvailable();
+    const reviews=getDueReviews();
+    const news=getTodayNew();
+    const learned=countLearned();
+    if(reviews.length>0 || (news.length>0 && hasUnlearned())){
+      // 显示学习计划弹窗
+      const planHtml=`<div class="modal-plan">
+        <div class="plan-row"><span>🔄 待复习单词</span><b>${reviews.length} 个</b></div>
+        <div class="plan-row"><span>🆕 本轮新词</span><b>${news.length} 个</b></div>
+        <div class="plan-row"><span>📚 已学 / 总计</span><b>${learned} / ${WORDS.length}</b></div>
+      </div>
+      <p style="text-align:left;font-size:13px">💡 建议：先复习巩固旧词（对抗遗忘），再学新词。学完一轮后可继续学下一轮！</p>
+      <div class="actions" style="margin-top:8px">
+        <button class="btn btn-warn" id="cfReview" ${reviews.length===0?'disabled style="opacity:.4"':''}>📖 先复习</button>
+        <button class="btn btn-primary" id="cfNew" ${news.length===0||!hasUnlearned()?'disabled style="opacity:.4"':''}>🆕 学新词</button>
+      </div>`;
+      $('modalBox').innerHTML='<h3>📚 今日学习计划</h3>'+planHtml;
+      $('modalMask').classList.add('show');
+      if($('cfReview')) $('cfReview').onclick=()=>{closeModal();startLearn('review');};
+      if($('cfNew')) $('cfNew').onclick=()=>{closeModal();startLearn('new');};
+    } else if(learned>=WORDS.length){
+      showModal('🎉 全书学完啦!','<div style="font-size:46px">🏆</div><p>你已经学完所有单词！\n继续复习巩固，挑战满分吧～</p><button class="btn btn-primary" onclick="closeModal()">好的</button>');
+    } else {
+      showModal('今日任务已完成 ✅','<div style="font-size:46px">🌟</div><p>今天的单词都学完啦！\n明天再来学新单词～\n\n也可以去挑战或复习旧词哦</p><button class="btn btn-primary" onclick="closeModal()">好的</button>');
+    }
+  };
+}
+$('reviewBtn').onclick=()=>startLearn('review');
+$('moreBtn').onclick=()=>startLearn('new');
+$('learnBack').onclick=()=>{ if(learnSession){showConfirm('退出学习？','本次进度不会保存，确定退出？',()=>{learnSession=null;nav('home');});} else nav('home'); };
+$('challengeStart')&&($('challengeStart').onclick=startChallenge);
+$('themeBtn').onclick=()=>{ S.dark=!S.dark; applyTheme(); saveState(); };
+document.querySelectorAll('[data-nav]').forEach(el=>{ el.onclick=()=>nav(el.dataset.nav); });
+
+/* ---------- 启动 ---------- */
+// 全局错误捕获：万一出错，在页面顶部显示错误信息，方便排查
+window.addEventListener('error', function(e){
+  var msg = (e.message||'未知错误') + (e.filename?(' ('+e.filename.split(/[\\\/]/).pop()+':'+e.lineno+')'):'');
+  var d = document.createElement('div');
+  d.style.cssText = 'position:fixed;top:0;left:0;right:0;background:#e53935;color:#fff;padding:8px 12px;font-size:12px;z-index:9999;word-break:break-all;max-height:40vh;overflow:auto';
+  d.textContent = '⚠️ 程序出错: ' + msg;
+  document.body.appendChild(d);
+});
+try {
+  loadState();
+  applyTheme();
+  bindHomeStart();
+  renderHome();
+} catch(err) {
+  document.body.insertAdjacentHTML('afterbegin', '<div style="position:fixed;top:0;left:0;right:0;background:#e53935;color:#fff;padding:10px;font-size:13px;z-index:9999">⚠️ 启动失败: '+err.message+'</div>');
+}
+</script>
+</body>
+</html>
